@@ -1,0 +1,18 @@
+# the mime type "text/plain"
+text/plain txt text TXT
+#MS Office (with xml extensions)
+application/vnd.ms-excel xlam xlsb xlsm xltm xltx xlsx xla xls xlt xlw
+application/vnd.ms-powerpoint potm potx ppam ppsm ppsx pptm pptx pot pps ppt
+application/vnd.ms-word docm dotm dotx docx doc word w6w
+
+#OpenOffice
+application/vnd.sun.xml.writer sxw
+application/vnd.sun.xml.writer.template stw
+application/vnd.sun.xml.writer.global sxg
+application/vnd.sun.xml.calc sxc
+application/vnd.sun.xml.calc.template stc
+application/vnd.sun.xml.impress sxi
+application/vnd.sun.xml.impress.template sti
+application/vnd.sun.xml.draw sxd
+application/vnd.sun.xml.draw.template std
+application/vnd.sun.xml.math sxm
