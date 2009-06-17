@@ -5,7 +5,6 @@
 
 package com.silverpeas.openoffice.windows;
 
-import com.silverpeas.openoffice.windows.FileWebDavAccessManager;
 import junit.framework.TestCase;
 
 /**

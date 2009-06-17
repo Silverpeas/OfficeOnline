@@ -24,11 +24,14 @@ public class MsOfficeRegistryHelper implements OfficeFinder {
   static final String POWERPOINT = "Powerpoint.Application";
   static final String WORD = "Word.Application";
   static final String FRONTPAGE = "FrontPage.Application";
-  static final String BASE_APPLICATION_KEY = "\"HKEY_LOCAL_MACHINE\\Software\\Classes\\";
-  static final String BASE_KEY_CLSID = "\"HKEY_LOCAL_MACHINE\\Software\\Classes\\CLSID\\";
-  static final Pattern AUTOMATION = Pattern.compile("\\s*/[aA][uU][tT][oO][mM][aA][tT][iI][oO][nN]\\s*");
-
-  static final String BASE_MSOFFICE_2007_KEY = "\"HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Office\\12.0\" /ve";
+  static final String BASE_APPLICATION_KEY =
+      "\"HKEY_LOCAL_MACHINE\\Software\\Classes\\";
+  static final String BASE_KEY_CLSID =
+      "\"HKEY_LOCAL_MACHINE\\Software\\Classes\\CLSID\\";
+  static final Pattern AUTOMATION = Pattern.compile(
+      "\\s*/[aA][uU][tT][oO][mM][aA][tT][iI][oO][nN]\\s*");
+  static final String BASE_MSOFFICE_2007_KEY =
+      "\"HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Office\\12.0\" /ve";
 
   protected String getClsid(String type) {
     return RegistryKeyReader.readKey(BASE_APPLICATION_KEY + type + "\\CLSID\"");
@@ -37,7 +40,8 @@ public class MsOfficeRegistryHelper implements OfficeFinder {
   protected String getPath(String type) {
     String clsid = getClsid(type);
     if (clsid != null) {
-      String path = RegistryKeyReader.readKey(BASE_KEY_CLSID + clsid + "\\LocalServer32\"");
+      String path = RegistryKeyReader.readKey(BASE_KEY_CLSID + clsid +
+          "\\LocalServer32\"");
       if (path != null) {
         return '"' + extractPath(path) + '"';
       }
@@ -78,7 +82,7 @@ public class MsOfficeRegistryHelper implements OfficeFinder {
     if (msPath == null) {
       msPath = openOffice.findOpenOffice();
     } else {
-    	msPath = msPath + " /m";
+      msPath = msPath + " /m";
     }
     return msPath;
   }
@@ -87,9 +91,9 @@ public class MsOfficeRegistryHelper implements OfficeFinder {
   public String findOther() throws OfficeNotFoundException {
     return openOffice.findOpenOffice();
   }
-  
+
   @Override
   public boolean isMicrosoftOffice2007() {
-	  return ( RegistryKeyReader.readKey(BASE_MSOFFICE_2007_KEY) != null);
+    return (RegistryKeyReader.readKey(BASE_MSOFFICE_2007_KEY) != null);
   }
 }

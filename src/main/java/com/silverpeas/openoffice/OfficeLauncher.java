@@ -37,8 +37,9 @@ public class OfficeLauncher {
       AuthenticationInfo authInfo) throws IOException,
       InterruptedException, OfficeNotFoundException {
     OfficeFinder finder = FinderFactory.getFinder(type);
-    boolean modeDisconnected = (OsEnum.getOS(System.getProperty("os.name")) ==
-        OsEnum.WINDOWS_VISTA) && (finder.isMicrosoftOffice2007());
+    boolean modeDisconnected = (OsEnum.getOS() ==
+        OsEnum.WINDOWS_VISTA || OsEnum.getOS() ==
+        OsEnum.MAC_OSX) && (finder.isMicrosoftOffice2007());
     switch (type) {
       case EXCEL:
         return launch(finder.findSpreadsheet(), url, modeDisconnected, authInfo);

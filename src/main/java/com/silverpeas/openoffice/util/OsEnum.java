@@ -13,17 +13,16 @@ import java.io.File;
 public enum OsEnum {
 
   WINDOWS_XP("Application Data\\Mozilla\\Firefox\\Profiles"),
-  WINDOWS_VISTA( "Appdata\\Roaming\\Mozilla\\Firefox"),
-  LINUX( ".mozilla/firefox"),
-  MAC_OSX( ".mozilla/firefox");
-  
+  WINDOWS_VISTA("Appdata\\Roaming\\Mozilla\\Firefox"),
+  LINUX(".mozilla/firefox"),
+  MAC_OSX(".mozilla/firefox");
   protected String profilesDir;
-  
+
   OsEnum(String profilesDir) {
     this.profilesDir = profilesDir;
   }
 
-  public static OsEnum getOS(String value) {    
+  public static OsEnum getOS(String value) {
     if ("Windows Vista".equalsIgnoreCase(value)) {
       return WINDOWS_VISTA;
     }
@@ -35,7 +34,11 @@ public enum OsEnum {
     }
     return MAC_OSX;
   }
-  
+
+  public static OsEnum getOS() {
+    return getOS(System.getProperty("os.name"));
+  }
+
   public String getProfilesDirectory() {
     return System.getProperty("user.home") + File.separator + profilesDir;
   }

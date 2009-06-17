@@ -27,7 +27,7 @@ public class RegistryKeyReader {
       }
       return result.substring(p + REGSTR_TOKEN.length()).trim();
     } catch (Exception e) {
-      logger.log(Level.SEVERE, "Error reading registry", e);
+      logger.log(Level.SEVERE, MessageUtil.getMessage("error.reading.registry"), e);
     }
     return null;
   }

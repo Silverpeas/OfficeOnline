@@ -4,7 +4,6 @@
  */
 package com.silverpeas.openoffice.windows;
 
-import com.silverpeas.openoffice.windows.MsOfficeRegistryHelper;
 import junit.framework.TestCase;
 
 /**

@@ -15,28 +15,30 @@ import java.util.logging.Logger;
  * @author Emmanuel Hugonnet
  */
 public class StreamReader extends Thread {
-    Logger logger = Logger.getLogger("installer");
-    
-    private InputStream is;
-    private StringWriter sw;
 
-    public StreamReader(InputStream is) {
-        this.is = is;
-        sw = new StringWriter();
-    }
+  static Logger logger = Logger.getLogger(UrlExtractor.class.getName());
+  private InputStream is;
+  private StringWriter sw;
 
-    public void run() {
-        try {
-            int c;
-            while ((c = is.read()) != -1) {
-                sw.write(c);
-            }
-        } catch (IOException e) {
-            logger.log(Level.SEVERE, "Error reading registry", e);
-        }
-    }
+  public StreamReader(InputStream is) {
+    this.is = is;
+    sw = new StringWriter();
+  }
 
-    public String getResult() {
-        return sw.toString();
+  @Override
+  public void run() {
+    try {
+      int c;
+      while ((c = is.read()) != -1) {
+        sw.write(c);
+      }
+    } catch (IOException e) {
+      logger.log(Level.SEVERE, MessageUtil.getMessage("error.reading.registry"),
+          e);
     }
+  }
+
+  public String getResult() {
+    return sw.toString();
+  }
 }

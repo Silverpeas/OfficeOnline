@@ -4,6 +4,7 @@
  */
 package com.silverpeas.openoffice;
 
+import com.silverpeas.openoffice.util.MessageUtil;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -15,6 +16,7 @@ import javax.activation.MimetypesFileTypeMap;
 import com.silverpeas.openoffice.util.MsOfficeType;
 import com.silverpeas.openoffice.util.PasswordManager;
 import com.silverpeas.openoffice.util.UrlExtractor;
+import javax.swing.JOptionPane;
 
 /**
  * 
@@ -30,29 +32,36 @@ public class Launcher {
    *            the command line arguments
    */
   public static void main(String[] args) throws OfficeNotFoundException {
-    System.out.println("OpenOffice Launcher");
-    logger.log(Level.INFO, "OpenOffice Launcher");
-    logger.log(Level.INFO, "URL encoded: " + args[0]);
+    System.out.println(MessageUtil.getMessage("app.title"));
+    logger.log(Level.INFO, MessageUtil.getMessage("app.title"));
+    logger.log(Level.INFO, MessageUtil.getMessage("info.url.encoded") + args[0]);
     try {
       String url = UrlExtractor.extractUrl(args[0]);
-      logger.log(Level.INFO, "URL decoded: " + url);
-      /*
-       * Test if password has been given
-       */
+      logger.log(Level.INFO, MessageUtil.getMessage("info.url.decoded") + url);
       AuthenticationInfo authInfo = null;
       if (args.length >= 3) {
         authInfo = PasswordManager.extractAuthenticationInfo(args[1], args[2]);
       }
 
       MsOfficeType contentType = getContentType(UrlExtractor.decodeUrl(args[0]));
-      logger.log(Level.FINE, "We have a document of type : " + contentType);
+      logger.log(Level.FINE, MessageUtil.getMessage("info.document.type") +
+          contentType);
       System.exit(OfficeLauncher.launch(contentType, url, authInfo));
     } catch (IOException ex) {
-      logger.log(Level.SEVERE, "Error launching OpenOffice", ex);
+      logger.log(Level.SEVERE, MessageUtil.getMessage("error.message.general"),
+          ex);
+      JOptionPane.showMessageDialog(null, ex.getMessage(),
+          MessageUtil.getMessage("error.title"), JOptionPane.ERROR_MESSAGE);
     } catch (InterruptedException ex) {
-      logger.log(Level.SEVERE, "Error launching OpenOffice", ex);
+      logger.log(Level.SEVERE, MessageUtil.getMessage("error.message.general"),
+          ex);
+      JOptionPane.showMessageDialog(null, ex.getMessage(),
+          MessageUtil.getMessage("error.title"), JOptionPane.ERROR_MESSAGE);
     } catch (Throwable ex) {
-      logger.log(Level.SEVERE, "Error launching OpenOffice", ex);
+      logger.log(Level.SEVERE, MessageUtil.getMessage("error.message.general"),
+          ex);
+      JOptionPane.showMessageDialog(null, ex.getMessage(),
+          MessageUtil.getMessage("error.title"), JOptionPane.ERROR_MESSAGE);
     } finally {
       System.exit(0);
     }

@@ -1,6 +1,7 @@
 package com.silverpeas.openoffice.windows;
 
 import com.silverpeas.openoffice.*;
+import com.silverpeas.openoffice.util.MessageUtil;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -90,7 +91,9 @@ public class FileWebDavAccessManager {
       URISyntaxException {
     URL formattedUrl = new URL(url);
     HttpClient client = initConnection(formattedUrl);
-    logger.log(Level.INFO, "Locking file : " + encodeUrl(url));
+
+    logger.log(Level.INFO, MessageUtil.getMessage("info.webdav.locking") +
+        encodeUrl(url));
     //Let's lock the file
     LockMethod lockMethod = new LockMethod(encodeUrl(url),
         Scope.EXCLUSIVE, Type.WRITE,
@@ -98,21 +101,29 @@ public class FileWebDavAccessManager {
     client.executeMethod(lockMethod);
     if (lockMethod.succeeded()) {
       lockToken = lockMethod.getLockToken();
+    } else {
+      throw new IOException(MessageUtil.getMessage("error.webdav.locking") +
+          lockMethod.getStatusCode() + " - " + lockMethod.getStatusText());
     }
-    logger.log(Level.INFO, "File locked " + lockToken);
+    logger.log(Level.INFO, MessageUtil.getMessage("info.webdav.locked") +
+        lockToken);
 
     GetMethod method = new GetMethod();
     method.setURI(new URI(url, false));
     client.executeMethod(method);
+    if (method.getStatusCode() != 200) {
+      throw new IOException(MessageUtil.getMessage("error.get.remote.file") +
+          method.getStatusCode() + " - " + method.getStatusText());
+    }
 
     String fileName = formattedUrl.getFile();
-    fileName = fileName.substring(fileName.lastIndexOf("/") + 1);
-    String prefix =
-        fileName.substring(0, fileName.lastIndexOf(".")).replace(' ', '_');
-    String suffix = fileName.substring(fileName.lastIndexOf("."));
-
+    fileName = fileName.substring(fileName.lastIndexOf('/') + 1);
+    fileName = fileName.replace(' ', '_');
     InputStream is = method.getResponseBodyAsStream();
-    File tmpFile = File.createTempFile(prefix, suffix);
+    File tempDir = new File(System.getProperty("java.io.tmpdir"), "silver-" +
+        System.currentTimeMillis());
+    tempDir.mkdirs();
+    File tmpFile = new File(tempDir, fileName);
     FileOutputStream fos = new FileOutputStream(tmpFile);
     int data = is.read();
     while (data != -1) {
@@ -120,7 +131,8 @@ public class FileWebDavAccessManager {
       data = is.read();
     }
     fos.close();
-    logger.log(Level.INFO, "File saved locally: " + tmpFile.getAbsolutePath());
+    logger.log(Level.INFO, MessageUtil.getMessage(
+        "info.webdav.file.locally.saved") + tmpFile.getAbsolutePath());
     return tmpFile.getAbsolutePath();
   }
 
@@ -151,21 +163,30 @@ public class FileWebDavAccessManager {
     client.executeMethod(method);
 
     if (method.getStatusCode() == 200) {
-      logger.log(Level.INFO, "Unlocking file : " + encodeUrl(url));
+      logger.log(Level.INFO, MessageUtil.getMessage("info.webdav.unlocking") +
+          encodeUrl(url));
       //Let's lock the file
       UnLockMethod unlockMethod = new UnLockMethod(encodeUrl(url), lockToken);
       client.executeMethod(unlockMethod);
-      if(unlockMethod.getStatusCode() != 200 && unlockMethod.getStatusCode() != 204) {
-        logger.log(Level.INFO, "Error unlocking file " + unlockMethod.getStatusCode());
+      if (unlockMethod.getStatusCode() != 200 && unlockMethod.getStatusCode() !=
+          204) {
+        logger.log(Level.INFO,
+            MessageUtil.getMessage("error.webdav.unlocking") + unlockMethod.
+            getStatusCode());
       }
       try {
         unlockMethod.checkSuccess();
-        logger.log(Level.INFO, "File unlocked");
+        logger.log(Level.INFO, MessageUtil.getMessage("info.webdav.unlocked"));
       } catch (DavException ex) {
-        logger.log(Level.SEVERE, null, ex);
+        logger.log(Level.SEVERE,
+            MessageUtil.getMessage("error.webdav.unlocking"), ex);
+        throw new IOException(MessageUtil.getMessage("error.webdav.unlocking"),
+            ex);
       }
       URI uri = new URI(url, false);
       PutMethod putMethod = new PutMethod(uri.getEscapedURI());
+      logger.log(Level.INFO, MessageUtil.getMessage("info.webdav.put") +
+          tmpFilePath);
       File file = new File(tmpFilePath);
       InputStream is = new FileInputStream(file);
       ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -178,12 +199,19 @@ public class FileWebDavAccessManager {
       RequestEntity requestEntity = new ByteArrayRequestEntity(bytes);
       putMethod.setRequestEntity(requestEntity);
       client.executeMethod(putMethod);
-      logger.log(Level.INFO, "File updated");
-      // delete temp file
-      file.delete();
-      logger.log(Level.INFO, "Local file deleted");
+      if (putMethod.succeeded()) {
+        logger.log(Level.INFO, MessageUtil.getMessage("info.file.updated"));
+        // delete temp file
+        file.delete();
+        logger.log(Level.INFO, MessageUtil.getMessage("info.file.deleted"));
+      } else {
+        throw new IOException(MessageUtil.getMessage("info.file.deleted") +
+            " - " + putMethod.getStatusCode() + " - " +
+            putMethod.getStatusText());
+      }
     } else {
-      logger.log(Level.SEVERE, "File doesn't exists anymore on server");
+      logger.log(Level.SEVERE, MessageUtil.getMessage("error.remote.file"));
+      throw new IOException(MessageUtil.getMessage("error.remote.file"));
     }
   }
 
@@ -202,7 +230,7 @@ public class FileWebDavAccessManager {
       }
       count++;
     }
-    String resultingUrl =  buffer.toString();
+    String resultingUrl = buffer.toString();
     return resultingUrl.replace('+', ' ').replaceAll(" ", "%20");
   }
 }

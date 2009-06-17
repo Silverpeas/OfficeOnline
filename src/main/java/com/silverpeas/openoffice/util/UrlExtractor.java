@@ -16,6 +16,8 @@ import java.util.logging.Logger;
  */
 public class UrlExtractor {
 
+  static Logger logger = Logger.getLogger(UrlExtractor.class.getName());
+
   /**
    * Decode the encoded URL
    * @param encodedUrl the url encoded.
@@ -25,11 +27,10 @@ public class UrlExtractor {
     String url = encodedUrl;
     try {
       url = URLDecoder.decode(encodedUrl, "UTF-8");
-      Logger.getLogger(UrlExtractor.class.getName()).log(Level.INFO,
-          "URL decoded: " + url);
+      logger.log(Level.INFO,
+          MessageUtil.getMessage("info.url.decoded") + url);
     } catch (IOException ex) {
-      Logger.getLogger(Launcher.class.getName()).log(Level.SEVERE,
-          "Error decoding the URL", ex);
+      logger.log(Level.SEVERE, MessageUtil.getMessage("error.decoding.url"), ex);
     }
     return url;
   }

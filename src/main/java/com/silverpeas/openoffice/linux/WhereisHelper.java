@@ -36,6 +36,7 @@ public class WhereisHelper extends OpenOfficeFinder {
     return null;
   }
 
+  @Override
   public String findOpenOffice()
       throws OpenOfficeNotFoundException {
     String result = whereis();
