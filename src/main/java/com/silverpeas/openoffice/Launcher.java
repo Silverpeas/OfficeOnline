@@ -4,6 +4,7 @@
  */
 package com.silverpeas.openoffice;
 
+import com.silverpeas.openoffice.util.MessageDisplayer;
 import com.silverpeas.openoffice.util.MessageUtil;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -33,10 +34,10 @@ public class Launcher {
    *            the command line arguments
    */
   public static void main(String[] args) throws OfficeNotFoundException {
-    System.out.println(MessageUtil.getMessage("app.title") + " version "
-            + LAUNCHER_VERSION);
-    logger.log(Level.INFO, MessageUtil.getMessage("app.title") + " version "
-            + LAUNCHER_VERSION);
+    System.out.println(
+        MessageUtil.getMessage("app.title") + " version " + LAUNCHER_VERSION);
+    logger.log(Level.INFO,
+        MessageUtil.getMessage("app.title") + " version " + LAUNCHER_VERSION);
     logger.log(Level.INFO, MessageUtil.getMessage("info.url.encoded") + args[0]);
     try {
       String url = UrlExtractor.extractUrl(args[0]);
@@ -45,33 +46,29 @@ public class Launcher {
       if (args.length >= 3) {
         authInfo = PasswordManager.extractAuthenticationInfo(args[1], args[2]);
       }
-
       MsOfficeType contentType = getContentType(UrlExtractor.decodeUrl(args[0]));
       logger.log(Level.FINE, MessageUtil.getMessage("info.document.type") +
-              contentType);
+          contentType);
       System.exit(OfficeLauncher.launch(contentType, url, authInfo));
     } catch (IOException ex) {
       logger.log(Level.SEVERE, MessageUtil.getMessage("error.message.general"),
-              ex);
-      JOptionPane.showMessageDialog(null, ex.getMessage(),
-              MessageUtil.getMessage("error.title"), JOptionPane.ERROR_MESSAGE);
+          ex);
+      MessageDisplayer.displayError(ex);
     } catch (InterruptedException ex) {
       logger.log(Level.SEVERE, MessageUtil.getMessage("error.message.general"),
-              ex);
-      JOptionPane.showMessageDialog(null, ex.getMessage(),
-              MessageUtil.getMessage("error.title"), JOptionPane.ERROR_MESSAGE);
+          ex);
+      MessageDisplayer.displayError(ex);
     } catch (Throwable ex) {
       logger.log(Level.SEVERE, MessageUtil.getMessage("error.message.general"),
-              ex);
-      JOptionPane.showMessageDialog(null, ex.getMessage(),
-              MessageUtil.getMessage("error.title"), JOptionPane.ERROR_MESSAGE);
+          ex);
+      MessageDisplayer.displayError(ex);
     } finally {
       System.exit(0);
     }
   }
 
   private static MsOfficeType getContentType(String url)
-          throws MalformedURLException {
+      throws MalformedURLException {
     String fileName = new URL(url).getFile();
     String contentType = mimeTypes.getContentType(fileName);
     return MsOfficeType.valueOfMimeType(contentType);

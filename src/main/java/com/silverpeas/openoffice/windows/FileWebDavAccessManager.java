@@ -1,6 +1,7 @@
 package com.silverpeas.openoffice.windows;
 
 import com.silverpeas.openoffice.*;
+import com.silverpeas.openoffice.util.MessageDisplayer;
 import com.silverpeas.openoffice.util.MessageUtil;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -205,6 +206,7 @@ public class FileWebDavAccessManager {
         file.delete();
         file.getParentFile().delete();
         logger.log(Level.INFO, MessageUtil.getMessage("info.file.deleted"));
+        MessageDisplayer.displayMessage(MessageUtil.getMessage("info.ok"));
       } else {
         throw new IOException(MessageUtil.getMessage("error.put.remote.file") +
             " - " + putMethod.getStatusCode() + " - " +
