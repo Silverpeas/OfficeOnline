@@ -185,7 +185,7 @@ public class FileWebDavAccessManager {
       URI uri = new URI(url, false);
       PutMethod putMethod = new PutMethod(uri.getEscapedURI());
       logger.log(Level.INFO, MessageUtil.getMessage("info.webdav.put") +
-              tmpFilePath);
+              ' ' + tmpFilePath);
       File file = new File(tmpFilePath);
       InputStream is = new FileInputStream(file);
       ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -202,9 +202,10 @@ public class FileWebDavAccessManager {
         logger.log(Level.INFO, MessageUtil.getMessage("info.file.updated"));
         // delete temp file
         file.delete();
+        file.getParentFile().delete();
         logger.log(Level.INFO, MessageUtil.getMessage("info.file.deleted"));
       } else {
-        throw new IOException(MessageUtil.getMessage("info.file.deleted") +
+        throw new IOException(MessageUtil.getMessage("error.put.remote.file") +
                 " - " + putMethod.getStatusCode() + " - " +
                 putMethod.getStatusText());
       }
