@@ -33,7 +33,7 @@ public class FileWebDavAccessManagerTest extends TestCase {
   public void testEncodeUrl() throws Exception {
     System.out.println("encodeUrl");
     String url = "http://localhost:8000/silverpeas/toto/Ceci est un &x@plé.doc";
-    String expResult = "http://localhost:8000/silverpeas/toto/Ceci%20est%20un%20%26x%40pl%E9.doc";
+    String expResult = "http://localhost:8000/silverpeas/toto/Ceci%20est%20un%20%26x%40pl%C3%A9.doc";
     String result = FileWebDavAccessManager.encodeUrl(url);
     assertEquals(expResult, result);
   }
