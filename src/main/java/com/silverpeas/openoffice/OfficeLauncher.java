@@ -72,13 +72,6 @@ public class OfficeLauncher {
     logger.log(Level.INFO, "The path: " + path);
     logger.log(Level.INFO, "The url: " + url);
     logger.log(Level.INFO, "The command line: " + path + ' ' + url);
-
-    /*
-     * 1) download file using webdav to local temp directory
-     * 2) open it
-     * 3) after close, send it back to silverpeas, still using webdav
-     * 4) delete temp file locally
-     */
     if (modeDisconnected) {
       try {
         FileWebDavAccessManager webdavAccessManager =

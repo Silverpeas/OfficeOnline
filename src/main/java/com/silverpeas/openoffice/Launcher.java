@@ -24,6 +24,7 @@ import javax.swing.JOptionPane;
  */
 public class Launcher {
 
+  static final String LAUNCHER_VERSION = "2.9";
   static final MimetypesFileTypeMap mimeTypes = new MimetypesFileTypeMap();
   static Logger logger = Logger.getLogger(Launcher.class.getName());
 
@@ -32,8 +33,10 @@ public class Launcher {
    *            the command line arguments
    */
   public static void main(String[] args) throws OfficeNotFoundException {
-    System.out.println(MessageUtil.getMessage("app.title"));
-    logger.log(Level.INFO, MessageUtil.getMessage("app.title"));
+    System.out.println(MessageUtil.getMessage("app.title") + " version "
+            + LAUNCHER_VERSION);
+    logger.log(Level.INFO, MessageUtil.getMessage("app.title") + " version "
+            + LAUNCHER_VERSION);
     logger.log(Level.INFO, MessageUtil.getMessage("info.url.encoded") + args[0]);
     try {
       String url = UrlExtractor.extractUrl(args[0]);
@@ -45,30 +48,30 @@ public class Launcher {
 
       MsOfficeType contentType = getContentType(UrlExtractor.decodeUrl(args[0]));
       logger.log(Level.FINE, MessageUtil.getMessage("info.document.type") +
-          contentType);
+              contentType);
       System.exit(OfficeLauncher.launch(contentType, url, authInfo));
     } catch (IOException ex) {
       logger.log(Level.SEVERE, MessageUtil.getMessage("error.message.general"),
-          ex);
+              ex);
       JOptionPane.showMessageDialog(null, ex.getMessage(),
-          MessageUtil.getMessage("error.title"), JOptionPane.ERROR_MESSAGE);
+              MessageUtil.getMessage("error.title"), JOptionPane.ERROR_MESSAGE);
     } catch (InterruptedException ex) {
       logger.log(Level.SEVERE, MessageUtil.getMessage("error.message.general"),
-          ex);
+              ex);
       JOptionPane.showMessageDialog(null, ex.getMessage(),
-          MessageUtil.getMessage("error.title"), JOptionPane.ERROR_MESSAGE);
+              MessageUtil.getMessage("error.title"), JOptionPane.ERROR_MESSAGE);
     } catch (Throwable ex) {
       logger.log(Level.SEVERE, MessageUtil.getMessage("error.message.general"),
-          ex);
+              ex);
       JOptionPane.showMessageDialog(null, ex.getMessage(),
-          MessageUtil.getMessage("error.title"), JOptionPane.ERROR_MESSAGE);
+              MessageUtil.getMessage("error.title"), JOptionPane.ERROR_MESSAGE);
     } finally {
       System.exit(0);
     }
   }
 
   private static MsOfficeType getContentType(String url)
-      throws MalformedURLException {
+          throws MalformedURLException {
     String fileName = new URL(url).getFile();
     String contentType = mimeTypes.getContentType(fileName);
     return MsOfficeType.valueOfMimeType(contentType);
