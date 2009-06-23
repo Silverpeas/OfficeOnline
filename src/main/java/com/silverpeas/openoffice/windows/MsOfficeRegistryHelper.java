@@ -17,7 +17,8 @@ import java.util.regex.Pattern;
  */
 public class MsOfficeRegistryHelper implements OfficeFinder {
 
-  static final OpenOfficeFinder openOffice = new RegistryHelper();
+  static final OfficeFinder msOfficeFinder = new MsOfficePathFinder();
+
   static final String ACCESS = "Access.Application";
   static final String EXCEL = "Excel.Application";
   static final String OUTLOOK = "Outlook.Application";
@@ -62,7 +63,7 @@ public class MsOfficeRegistryHelper implements OfficeFinder {
   public String findSpreadsheet() throws OfficeNotFoundException {
     String msPath = getPath(EXCEL);
     if (msPath == null) {
-      msPath = openOffice.findOpenOffice();
+      msPath = msOfficeFinder.findSpreadsheet();
     }
     return msPath;
   }
@@ -71,7 +72,7 @@ public class MsOfficeRegistryHelper implements OfficeFinder {
   public String findPresentation() throws OfficeNotFoundException {
     String msPath = getPath(POWERPOINT);
     if (msPath == null) {
-      msPath = openOffice.findOpenOffice();
+      msPath = msOfficeFinder.findPresentation();
     }
     return msPath;
   }
@@ -80,7 +81,7 @@ public class MsOfficeRegistryHelper implements OfficeFinder {
   public String findWordEditor() throws OfficeNotFoundException {
     String msPath = getPath(WORD);
     if (msPath == null) {
-      msPath = openOffice.findOpenOffice();
+      msPath = msOfficeFinder.findWordEditor();
     } else {
       msPath = msPath + " /m";
     }
@@ -89,7 +90,7 @@ public class MsOfficeRegistryHelper implements OfficeFinder {
 
   @Override
   public String findOther() throws OfficeNotFoundException {
-    return openOffice.findOpenOffice();
+    return msOfficeFinder.findOther();
   }
 
   @Override

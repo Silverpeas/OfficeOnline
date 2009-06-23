@@ -16,9 +16,9 @@ import com.silverpeas.openoffice.util.RegistryKeyReader;
  *
  * @author Emvnd.sun.star.webdavel Hugonnet
  */
-public class RegistryHelper extends OpenOfficeFinder {
+public class WindowsOpenOfficeFinder extends OpenOfficeFinder {
 
-  Logger logger = Logger.getLogger(RegistryHelper.class.getName());
+  Logger logger = Logger.getLogger(WindowsOpenOfficeFinder.class.getName());
   private static final String[] VERSIONS = new String[]{"3.1", "3.0", "2.4",
     "2.3"};
   private static final String GLOBAL_OPEN_OFFICE_FOLDER =

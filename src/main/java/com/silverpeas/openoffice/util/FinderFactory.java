@@ -9,7 +9,7 @@ import com.silverpeas.openoffice.linux.WhereisHelper;
 import com.silverpeas.openoffice.macosx.MacOsOfficeFinder;
 import com.silverpeas.openoffice.macosx.WhereisMacHelper;
 import com.silverpeas.openoffice.windows.MsOfficeRegistryHelper;
-import com.silverpeas.openoffice.windows.RegistryHelper;
+import com.silverpeas.openoffice.windows.WindowsOpenOfficeFinder;
 
 /**
  *
@@ -25,7 +25,7 @@ public class FinderFactory {
         if (contentType.isMsOfficeCompatible()) {
           return new MsOfficeRegistryHelper();
         }
-        return new RegistryHelper();
+        return new WindowsOpenOfficeFinder();
       case LINUX:
         return new WhereisHelper();
       case MAC_OSX:

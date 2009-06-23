@@ -44,7 +44,7 @@ public class RegistryHelperTest extends TestCase {
     if (!System.getProperty("os.name").startsWith("Windows")) {
       return;
     }
-    RegistryHelper helper = new RegistryHelper();
+    WindowsOpenOfficeFinder helper = new WindowsOpenOfficeFinder();
     String openOffice2_4 = helper.getOpenOfficePath(INSTALLED_VERSION);
     assertNotNull(openOffice2_4);
     assertEquals("C:\\Program Files\\OpenOffice.org 3\\program\\soffice.exe",
@@ -57,7 +57,7 @@ public class RegistryHelperTest extends TestCase {
     if (!System.getProperty("os.name").startsWith("Windows")) {
       return;
     }
-    RegistryHelper helper = new RegistryHelper();
+    WindowsOpenOfficeFinder helper = new WindowsOpenOfficeFinder();
     String openOffice = helper.findOpenOffice();
     assertNotNull(openOffice);
     assertEquals("\"C:\\Program Files\\OpenOffice.org 3\\program\\soffice.exe\"",

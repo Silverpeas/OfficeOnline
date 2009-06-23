@@ -17,7 +17,8 @@ import javax.activation.MimetypesFileTypeMap;
 import com.silverpeas.openoffice.util.MsOfficeType;
 import com.silverpeas.openoffice.util.PasswordManager;
 import com.silverpeas.openoffice.util.UrlExtractor;
-import javax.swing.JOptionPane;
+import com.silverpeas.openoffice.windows.MsOfficePathFinder;
+import java.io.File;
 
 /**
  * 
@@ -25,7 +26,7 @@ import javax.swing.JOptionPane;
  */
 public class Launcher {
 
-  static final String LAUNCHER_VERSION = "2.9";
+  static final String LAUNCHER_VERSION = "2.11";
   static final MimetypesFileTypeMap mimeTypes = new MimetypesFileTypeMap();
   static Logger logger = Logger.getLogger(Launcher.class.getName());
 
@@ -34,17 +35,20 @@ public class Launcher {
    *            the command line arguments
    */
   public static void main(String[] args) throws OfficeNotFoundException {
-    System.out.println(
-        MessageUtil.getMessage("app.title") + " version " + LAUNCHER_VERSION);
     logger.log(Level.INFO,
         MessageUtil.getMessage("app.title") + " version " + LAUNCHER_VERSION);
     logger.log(Level.INFO, MessageUtil.getMessage("info.url.encoded") + args[0]);
     try {
       String url = UrlExtractor.extractUrl(args[0]);
       logger.log(Level.INFO, MessageUtil.getMessage("info.url.decoded") + url);
+      if (args[1] != null && !"".equals(args[1].trim())) {
+        logger.log(Level.INFO,
+            MessageUtil.getMessage("info.default.path") + ' ' + args[1]);
+        MsOfficePathFinder.basePath = args[1].replace('/', File.separatorChar);
+      }
       AuthenticationInfo authInfo = null;
-      if (args.length >= 3) {
-        authInfo = PasswordManager.extractAuthenticationInfo(args[1], args[2]);
+      if (args.length >= 4) {
+        authInfo = PasswordManager.extractAuthenticationInfo(args[2], args[3]);
       }
       MsOfficeType contentType = getContentType(UrlExtractor.decodeUrl(args[0]));
       logger.log(Level.FINE, MessageUtil.getMessage("info.document.type") +
