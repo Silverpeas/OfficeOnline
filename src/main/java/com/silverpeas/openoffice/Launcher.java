@@ -26,7 +26,7 @@ import java.io.File;
  */
 public class Launcher {
 
-  static final String LAUNCHER_VERSION = "2.11";
+  static final String LAUNCHER_VERSION = "2.12";
   static final MimetypesFileTypeMap mimeTypes = new MimetypesFileTypeMap();
   static Logger logger = Logger.getLogger(Launcher.class.getName());
 
@@ -42,9 +42,9 @@ public class Launcher {
       String url = UrlExtractor.extractUrl(args[0]);
       logger.log(Level.INFO, MessageUtil.getMessage("info.url.decoded") + url);
       if (args[1] != null && !"".equals(args[1].trim())) {
-        logger.log(Level.INFO,
-            MessageUtil.getMessage("info.default.path") + ' ' + args[1]);
-        MsOfficePathFinder.basePath = args[1].replace('/', File.separatorChar);
+        logger.log(Level.INFO,MessageUtil.getMessage("info.default.path")
+            + ' ' + UrlExtractor.decodePath(args[1]));
+        MsOfficePathFinder.basePath = UrlExtractor.decodePath(args[1]);
       }
       AuthenticationInfo authInfo = null;
       if (args.length >= 4) {

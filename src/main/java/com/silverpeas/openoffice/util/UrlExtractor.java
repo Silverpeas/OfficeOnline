@@ -4,7 +4,7 @@
  */
 package com.silverpeas.openoffice.util;
 
-import com.silverpeas.openoffice.Launcher;
+import java.io.File;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.util.logging.Level;
@@ -64,5 +64,15 @@ public class UrlExtractor {
   public static String extractUrl(String encodedUrl) {
     String decodedUrl = decodeUrl(encodedUrl);
     return escapeUrl(decodedUrl);
+  }
+
+  /**
+   * Decode the encoded path
+   * @param encodedUrl the path encoded.
+   * @return the path decoded.
+   */
+  public static String decodePath(String encodedPath) {
+    String path = decodeUrl(encodedPath);
+    return path.replace('/', File.separatorChar);
   }
 }
