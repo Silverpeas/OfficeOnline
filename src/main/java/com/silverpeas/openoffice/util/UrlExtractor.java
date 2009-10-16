@@ -59,7 +59,7 @@ public class UrlExtractor {
   }
 
   /**
-   * Escape the rl to manage whitespaces.
+   * Escape the url to manage whitespaces.
    * If we are on Windows the url is surrounded with quotes.
    * If we are on Unix the whitespaces are escaped with %20.
    * @param url the url with whitespaces.
@@ -70,14 +70,25 @@ public class UrlExtractor {
     switch (os) {
       case WINDOWS_XP:
       case WINDOWS_VISTA:
-        return '"' + url + '"';
+        return '"' + escapeWhiteSpaces(url) + '"';
       case LINUX:
       case MAC_OSX:
-        return url.replaceAll(" ", "%20");
+        return escapeWhiteSpaces(url);
       default:
-        return url.replaceAll(" ", "%20");
+        return escapeWhiteSpaces(url);
     }
   }
+
+  /**
+   * Escape the url to manage whitespaces.
+   * If we are on Windows the url is surrounded with quotes.
+   * If we are on Unix the whitespaces are escaped with %20.
+   * @param url the url with whitespaces.
+   * @return the url with whitespaces escaped.
+   */
+   public static String escapeWhiteSpaces(String url) {
+     return url.replaceAll(" ", "%20");
+   }
 
   /**
    * Decode and espace whitespaces from the url.

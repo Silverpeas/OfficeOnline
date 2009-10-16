@@ -21,10 +21,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.silverpeas.openoffice;
 
 import com.silverpeas.openoffice.windows.FileWebDavAccessManager;
@@ -36,6 +32,7 @@ import java.util.logging.Logger;
 import com.silverpeas.openoffice.util.FinderFactory;
 import com.silverpeas.openoffice.util.MsOfficeType;
 import com.silverpeas.openoffice.util.OsEnum;
+import com.silverpeas.openoffice.util.UrlExtractor;
 import org.apache.commons.httpclient.HttpException;
 
 /**
@@ -59,7 +56,7 @@ public class OfficeLauncher {
   public static int launch(MsOfficeType type, String url,
       AuthenticationInfo authInfo) throws IOException,
       InterruptedException, OfficeNotFoundException {
-    OfficeFinder finder = FinderFactory.getFinder(type);
+    OfficeFinder finder = FinderFactory.getFinder(type); 
     boolean modeDisconnected = (OsEnum.getOS() ==
         OsEnum.WINDOWS_VISTA || OsEnum.getOS() ==
         OsEnum.MAC_OSX) && (finder.isMicrosoftOffice2007());
@@ -115,6 +112,7 @@ public class OfficeLauncher {
       }
     } else {
       //Standard mode : just open it
+      logger.log(Level.INFO, "The exact exec line: " + path + ' ' + url);
       Process process = Runtime.getRuntime().exec(path + ' ' + url);
       return process.waitFor();
     }

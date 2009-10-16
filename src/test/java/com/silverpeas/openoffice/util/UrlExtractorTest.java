@@ -64,7 +64,7 @@ public class UrlExtractorTest extends TestCase {
    */
   public void testEscapeUrl() {
     String url = "http://dsr-preprod-3/silverpeas/repository/jackrabbit/attachments/kmelia34/Attachment/Images/44733/Atelier en classe.doc";
-    String expResult = "\"http://dsr-preprod-3/silverpeas/repository/jackrabbit/attachments/kmelia34/Attachment/Images/44733/Atelier en classe.doc\"";
+    String expResult = "\"http://dsr-preprod-3/silverpeas/repository/jackrabbit/attachments/kmelia34/Attachment/Images/44733/Atelier%20en%20classe.doc\"";
     String expResultUnix = "http://dsr-preprod-3/silverpeas/repository/jackrabbit/attachments/kmelia34/Attachment/Images/44733/Atelier%20en%20classe.doc";
     System.setProperty("os.name", "Windows XP");
     String result = UrlExtractor.escapeUrl(url);
@@ -80,7 +80,7 @@ public class UrlExtractorTest extends TestCase {
   public void testExtractUrl() {
     System.setProperty("os.name", "Windows XP");
     String encodedUrl = "http%3A%2F%2Fdsr-preprod-3%2Fsilverpeas%2Frepository%2Fjackrabbit%2Fattachments%2Fkmelia34%2FAttachment%2FImages%2F44733%2FAtelier+en+classe.doc";
-    String expResult = "\"http://dsr-preprod-3/silverpeas/repository/jackrabbit/attachments/kmelia34/Attachment/Images/44733/Atelier en classe.doc\"";
+    String expResult = "\"http://dsr-preprod-3/silverpeas/repository/jackrabbit/attachments/kmelia34/Attachment/Images/44733/Atelier%20en%20classe.doc\"";
     String result = UrlExtractor.extractUrl(encodedUrl);
     assertEquals(expResult, result);
   }

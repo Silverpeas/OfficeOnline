@@ -86,4 +86,5 @@ public class MacOsOfficeFinder implements OfficeFinder {
     File officeDir = new File(OFFICE_PATH);
     return officeDir.exists();
   }
+
 }

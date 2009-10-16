@@ -21,10 +21,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.silverpeas.openoffice;
 
 import com.silverpeas.openoffice.util.MessageDisplayer;
@@ -41,7 +37,6 @@ import com.silverpeas.openoffice.util.MsOfficeType;
 import com.silverpeas.openoffice.util.PasswordManager;
 import com.silverpeas.openoffice.util.UrlExtractor;
 import com.silverpeas.openoffice.windows.MsOfficePathFinder;
-import java.io.File;
 
 /**
  * 

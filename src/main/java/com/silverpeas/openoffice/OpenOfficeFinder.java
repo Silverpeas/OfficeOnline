@@ -57,6 +57,6 @@ public abstract class OpenOfficeFinder implements OfficeFinder {
   public boolean isMicrosoftOffice2007() {
     return false;
   }
-
+  
   public abstract String findOpenOffice() throws OfficeNotFoundException;
 }

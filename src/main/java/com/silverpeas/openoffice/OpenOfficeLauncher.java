@@ -28,6 +28,8 @@
 package com.silverpeas.openoffice;
 
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -35,8 +37,11 @@ import java.io.IOException;
  */
 public class OpenOfficeLauncher {
 
+  static Logger logger = Logger.getLogger(OfficeLauncher.class.getName());
+
   public static int launch(String path, String url)
       throws IOException, InterruptedException {
+    logger.log(Level.INFO, "The exact exec line: " + '"' + path + "\" " + url);
     Process process = Runtime.getRuntime().exec('"' + path + "\" " + url);
     return process.waitFor();
   }

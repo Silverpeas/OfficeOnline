@@ -29,7 +29,6 @@ package com.silverpeas.openoffice.windows;
 
 import com.silverpeas.openoffice.OfficeFinder;
 import com.silverpeas.openoffice.OfficeNotFoundException;
-import com.silverpeas.openoffice.OpenOfficeFinder;
 import com.silverpeas.openoffice.util.RegistryKeyReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -120,4 +119,5 @@ public class MsOfficeRegistryHelper implements OfficeFinder {
   public boolean isMicrosoftOffice2007() {
     return (RegistryKeyReader.readKey(BASE_MSOFFICE_2007_KEY) != null);
   }
+
 }

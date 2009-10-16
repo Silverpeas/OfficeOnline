@@ -38,6 +38,7 @@ import java.io.File;
  */
 public class MsOfficePathFinder implements OfficeFinder {
 
+  private boolean isOpenOffice = true;
   static final OpenOfficeFinder openOffice = new WindowsOpenOfficeFinder();
   public static String basePath = "C:\\Program Files\\Microsoft Office\\OFFICE11";
   private static final String EXCEL = "EXCEL.EXE";
@@ -50,29 +51,36 @@ public class MsOfficePathFinder implements OfficeFinder {
   @Override
   public String findSpreadsheet() throws OfficeNotFoundException {
     if (exists(EXCEL)) {
+      isOpenOffice = false;
       return basePath + File.separator + EXCEL;
     }
+    isOpenOffice = true;
     return openOffice.findSpreadsheet();
   }
 
   @Override
   public String findPresentation() throws OfficeNotFoundException {
     if (exists(POWERPOINT)) {
+      isOpenOffice = false;
       return basePath + File.separator + POWERPOINT;
     }
+    isOpenOffice = true;
     return openOffice.findPresentation();
   }
 
   @Override
   public String findWordEditor() throws OfficeNotFoundException {
     if (exists(WORDS)) {
+      isOpenOffice = false;
       return basePath + File.separator + WORDS + " /m";
     }
+    isOpenOffice = true;
     return openOffice.findWordEditor();
   }
 
   @Override
   public String findOther() throws OfficeNotFoundException {
+    isOpenOffice = true;
     return openOffice.findOther();
   }
 
@@ -85,4 +93,5 @@ public class MsOfficePathFinder implements OfficeFinder {
     File executable = new File(basePath, exe);
     return executable.exists() && executable.isFile();
   }
+
 }
