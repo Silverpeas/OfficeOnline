@@ -89,10 +89,10 @@ public class Launcher {
     }
   }
 
-  private static MsOfficeType getContentType(String url)
+  protected static MsOfficeType getContentType(String url)
       throws MalformedURLException {
     String fileName = new URL(url).getFile();
-    String contentType = mimeTypes.getContentType(fileName);
+    String contentType = mimeTypes.getContentType(fileName.toLowerCase());
     return MsOfficeType.valueOfMimeType(contentType);
   }
 }
