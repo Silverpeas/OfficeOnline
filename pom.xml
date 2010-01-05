@@ -1,6 +1,6 @@
-
+<?xml version="1.0" encoding="UTF-8" ?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>com.silverpeas</groupId>
@@ -16,23 +16,8 @@
   <name>Online Office Editor</name>
   <build>
     <finalName>OpenOfficeLauncher</finalName>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <encoding>${project.build.sourceEncoding}</encoding>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-resources-plugin</artifactId>
-        <configuration>
-          <encoding>${project.build.sourceEncoding}</encoding>
-        </configuration>
-      </plugin>
-    </plugins>
   </build>
+
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
@@ -79,9 +64,42 @@
       <artifactId>xercesImpl</artifactId>
     </dependency>
   </dependencies>
+  <profiles>
+    <profile>
+      <id>signing</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-jarsigner-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>Signing</id>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <alias>Silverpeas</alias>
+              <storetype>pkcs12</storetype>
+              <keystore>${silverpeas.keystore}</keystore>
+              <storepass>${silverpeas.storepass}</storepass>
+              <verbose>true</verbose>
+              <keypass>${silverpeas.storepass}</keypass>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
+
   <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <silverpeas.keystore>${env.SILVERPEAS_HOME}/bin/silverpeas.p12</silverpeas.keystore>
+    <silverpeas.storepass>changeit</silverpeas.storepass>
   </properties>
+
+
 </project>
 
 
