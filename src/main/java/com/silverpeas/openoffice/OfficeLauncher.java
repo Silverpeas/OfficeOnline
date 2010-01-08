@@ -32,7 +32,6 @@ import java.util.logging.Logger;
 import com.silverpeas.openoffice.util.FinderFactory;
 import com.silverpeas.openoffice.util.MsOfficeType;
 import com.silverpeas.openoffice.util.OsEnum;
-import com.silverpeas.openoffice.util.UrlExtractor;
 import org.apache.commons.httpclient.HttpException;
 
 /**

@@ -59,6 +59,10 @@ public class FileWebDavAccessManagerTest extends TestCase {
     String expResult = "http://localhost:8000/silverpeas/toto/Ceci%20est%20un%20%26x%40pl%C3%A9.doc";
     String result = FileWebDavAccessManager.encodeUrl(url);
     assertEquals(expResult, result);
+    String escapedUrl = "http://localhost:8000/silverpeas/toto/Ceci%20est%20un%20&x@plé.doc";
+    assertEquals(escapedUrl.replaceAll("%20", " "), url);
+    result = FileWebDavAccessManager.encodeUrl(escapedUrl);
+    assertEquals(expResult, result);
   }
 
 }

@@ -53,10 +53,12 @@
           <artifactId>commons-collections</artifactId>
           <groupId>commons-collections</groupId>
         </exclusion>
+        <!--
         <exclusion>
           <artifactId>jackrabbit-jcr-commons</artifactId>
           <groupId>org.apache.jackrabbit</groupId>
         </exclusion>
+        -->
       </exclusions>
     </dependency>
     <dependency>

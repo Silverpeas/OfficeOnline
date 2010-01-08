@@ -35,9 +35,10 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
-
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.StringTokenizer;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.httpclient.Credentials;
@@ -47,6 +48,7 @@ import org.apache.commons.httpclient.HttpConnectionManager;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.URI;
+import org.apache.commons.httpclient.URIException;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.ByteArrayRequestEntity;
@@ -72,7 +74,7 @@ public class FileWebDavAccessManager {
   private String password;
   private String lockToken = null;
   static Logger logger = Logger.getLogger(
-      FileWebDavAccessManager.class.getName());
+          FileWebDavAccessManager.class.getName());
 
   /**
    * The AccessManager is inited with authentication info to avoid login prompt
@@ -88,7 +90,7 @@ public class FileWebDavAccessManager {
     HostConfiguration hostConfig = new HostConfiguration();
     hostConfig.setHost(url.getHost());
     HttpConnectionManager connectionManager =
-        new MultiThreadedHttpConnectionManager();
+            new MultiThreadedHttpConnectionManager();
     HttpConnectionManagerParams params = new HttpConnectionManagerParams();
     int maxHostConnections = 20;
     params.setMaxConnectionsPerHost(hostConfig, maxHostConnections);
@@ -111,40 +113,42 @@ public class FileWebDavAccessManager {
    * @throws IOException
    */
   public String retrieveFile(String url) throws HttpException, IOException,
-      URISyntaxException {
-    URL formattedUrl = new URL(url);
+          URISyntaxException {
+    URI uri = getURI(url);
+    URL formattedUrl = new URL(uri.getEscapedURI());
     HttpClient client = initConnection(formattedUrl);
 
-    logger.log(Level.INFO, MessageUtil.getMessage("info.webdav.locking") +
-        ' ' + encodeUrl(url));
+    logger.log(Level.INFO, MessageUtil.getMessage("info.webdav.locking")
+            + ' ' + uri.getEscapedURI());
     //Let's lock the file
-    LockMethod lockMethod = new LockMethod(encodeUrl(url),
-        Scope.EXCLUSIVE, Type.WRITE,
-        userName, 600000l, false);
+    LockMethod lockMethod = new LockMethod(uri.getEscapedURI(),
+            Scope.EXCLUSIVE, Type.WRITE,
+            userName, 600000l, false);
     client.executeMethod(lockMethod);
     if (lockMethod.succeeded()) {
       lockToken = lockMethod.getLockToken();
     } else {
-      throw new IOException(MessageUtil.getMessage("error.webdav.locking") 
-          + ' ' + lockMethod.getStatusCode() + " - "
-          + lockMethod.getStatusText());
+      throw new IOException(MessageUtil.getMessage("error.webdav.locking")
+              + ' ' + lockMethod.getStatusCode() + " - "
+              + lockMethod.getStatusText());
     }
-    logger.log(Level.INFO, MessageUtil.getMessage("info.webdav.locked") + ' ' 
-        + lockToken);
+    logger.log(Level.INFO, MessageUtil.getMessage("info.webdav.locked") + ' '
+            + lockToken);
     GetMethod method = new GetMethod();
-    method.setURI(new URI(url, false));
+    method.setURI(uri);
     client.executeMethod(method);
     if (method.getStatusCode() != 200) {
-      throw new IOException(MessageUtil.getMessage("error.get.remote.file") +
-          +' ' + method.getStatusCode() + " - " + method.getStatusText());
+      throw new IOException(MessageUtil.getMessage("error.get.remote.file")
+              + +' ' + method.getStatusCode() + " - " + method.getStatusText());
     }
 
     String fileName = formattedUrl.getFile();
     fileName = fileName.substring(fileName.lastIndexOf('/') + 1);
+    fileName = URLDecoder.decode(fileName, "UTF-8");
     fileName = fileName.replace(' ', '_');
     InputStream is = method.getResponseBodyAsStream();
-    File tempDir = new File(System.getProperty("java.io.tmpdir"), "silver-" +
-        System.currentTimeMillis());
+    File tempDir = new File(System.getProperty("java.io.tmpdir"), "silver-"
+            + System.currentTimeMillis());
     tempDir.mkdirs();
     File tmpFile = new File(tempDir, fileName);
     FileOutputStream fos = new FileOutputStream(tmpFile);
@@ -155,7 +159,7 @@ public class FileWebDavAccessManager {
     }
     fos.close();
     logger.log(Level.INFO, MessageUtil.getMessage(
-        "info.webdav.file.locally.saved") + ' ' + tmpFile.getAbsolutePath());
+            "info.webdav.file.locally.saved") + ' ' + tmpFile.getAbsolutePath());
     return tmpFile.getAbsolutePath();
   }
 
@@ -169,47 +173,48 @@ public class FileWebDavAccessManager {
    * @throws IOException
    */
   public void pushFile(String tmpFilePath, String url) throws HttpException,
-      IOException,
-      MalformedURLException,
-      UnsupportedEncodingException,
-      URISyntaxException {
+          IOException,
+          MalformedURLException,
+          UnsupportedEncodingException,
+          URISyntaxException,
+          URIException {
     /*
      * Build URL object to extract host
      */
-    URL formattedUrl = new URL(url);
-    HttpClient client = initConnection(formattedUrl);
+    URI uri = getURI(url);
+    HttpClient client = initConnection(new URL(uri.getEscapedURI()));
+    
     /*
      * Checks if file still exists
      */
     GetMethod method = new GetMethod();
-    method.setURI(new URI(url, false));
+    method.setURI(uri);
     client.executeMethod(method);
 
     if (method.getStatusCode() == 200) {
-      logger.log(Level.INFO, MessageUtil.getMessage("info.webdav.unlocking") +
-          ' ' + encodeUrl(url));
+      logger.log(Level.INFO, MessageUtil.getMessage("info.webdav.unlocking")
+              + ' ' + uri.getEscapedURI());
       //Let's lock the file
-      UnLockMethod unlockMethod = new UnLockMethod(encodeUrl(url), lockToken);
+      UnLockMethod unlockMethod = new UnLockMethod(uri.getEscapedURI(), lockToken);
       client.executeMethod(unlockMethod);
-      if (unlockMethod.getStatusCode() != 200 && unlockMethod.getStatusCode() !=
-          204) {
+      if (unlockMethod.getStatusCode() != 200 && unlockMethod.getStatusCode()
+              != 204) {
         logger.log(Level.INFO,
-            MessageUtil.getMessage("error.webdav.unlocking") + ' ' + unlockMethod.
-            getStatusCode());
+                MessageUtil.getMessage("error.webdav.unlocking") + ' ' + unlockMethod.getStatusCode());
       }
       try {
         unlockMethod.checkSuccess();
         logger.log(Level.INFO, MessageUtil.getMessage("info.webdav.unlocked"));
       } catch (DavException ex) {
         logger.log(Level.SEVERE,
-            MessageUtil.getMessage("error.webdav.unlocking"), ex);
+                MessageUtil.getMessage("error.webdav.unlocking"), ex);
         throw new IOException(MessageUtil.getMessage("error.webdav.unlocking"),
-            ex);
+                ex);
       }
-      URI uri = new URI(url, false);
+
       PutMethod putMethod = new PutMethod(uri.getEscapedURI());
-      logger.log(Level.INFO, MessageUtil.getMessage("info.webdav.put") +
-          ' ' + tmpFilePath);
+      logger.log(Level.INFO, MessageUtil.getMessage("info.webdav.put")
+              + ' ' + tmpFilePath);
       File file = new File(tmpFilePath);
       InputStream is = new FileInputStream(file);
       ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -230,9 +235,9 @@ public class FileWebDavAccessManager {
         logger.log(Level.INFO, MessageUtil.getMessage("info.file.deleted"));
         logger.log(Level.INFO, MessageUtil.getMessage("info.ok"));
       } else {
-        throw new IOException(MessageUtil.getMessage("error.put.remote.file") +
-            " - " + putMethod.getStatusCode() + " - " +
-            putMethod.getStatusText());
+        throw new IOException(MessageUtil.getMessage("error.put.remote.file")
+                + " - " + putMethod.getStatusCode() + " - "
+                + putMethod.getStatusText());
       }
     } else {
       logger.log(Level.SEVERE, MessageUtil.getMessage("error.remote.file"));
@@ -240,11 +245,10 @@ public class FileWebDavAccessManager {
     }
   }
 
-  public static String encodeUrl(String url) throws MalformedURLException,
-      UnsupportedEncodingException,
-      URISyntaxException {
+  public static String encodeUrl(String url) throws UnsupportedEncodingException {
     int count = 0;
-    StringTokenizer tokenizer = new StringTokenizer(url, "/", true);
+    String urlToBeEncoded = url.replaceAll("%20", " ");
+    StringTokenizer tokenizer = new StringTokenizer(urlToBeEncoded, "/", true);
     StringBuilder buffer = new StringBuilder();
     while (tokenizer.hasMoreTokens()) {
       String token = tokenizer.nextToken();
@@ -257,5 +261,9 @@ public class FileWebDavAccessManager {
     }
     String resultingUrl = buffer.toString();
     return resultingUrl.replace('+', ' ').replaceAll(" ", "%20");
+  }
+
+  private static URI getURI(String url) throws URIException {
+    return new URI(url.replaceAll("%20", " "), false, "UTF-8");
   }
 }
