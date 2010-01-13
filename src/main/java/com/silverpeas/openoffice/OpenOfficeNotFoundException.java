@@ -28,7 +28,6 @@
 package com.silverpeas.openoffice;
 
 /**
- *
  * @author Emmanuel Hugonnet
  */
 public class OpenOfficeNotFoundException extends OfficeNotFoundException {

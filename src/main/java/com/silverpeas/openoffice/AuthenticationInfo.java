@@ -25,9 +25,7 @@ package com.silverpeas.openoffice;
 
 /**
  * Authentication information.
- * 
  * @author Ludovic Bertin
- *
  */
 public class AuthenticationInfo {
 

@@ -32,7 +32,6 @@ import java.io.File;
 import java.io.FileFilter;
 
 /**
- *
  * @author Emmanuel Hugonnet
  */
 public class DirectoryFilter implements FileFilter {

@@ -35,7 +35,6 @@ import com.silverpeas.openoffice.windows.MsOfficeRegistryHelper;
 import com.silverpeas.openoffice.windows.WindowsOpenOfficeFinder;
 
 /**
- *
  * @author Emmanuel Hugonnet
  */
 public class FinderFactory {

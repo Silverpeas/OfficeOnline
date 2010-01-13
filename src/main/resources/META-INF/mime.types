@@ -3,7 +3,7 @@ text/plain txt text TXT
 #MS Office (with xml extensions)
 application/vnd.ms-excel xlam xlsb xlsm xltm xltx xlsx xla xls xlt xlw
 application/vnd.ms-powerpoint potm potx ppam ppsm ppsx pptm pptx pot pps ppt
-application/vnd.ms-word docm dotm dotx docx doc word w6w
+application/vnd.ms-word docm dotm dotx docx doc word w6w dot
 
 #OpenOffice
 application/vnd.sun.xml.writer sxw

@@ -30,7 +30,6 @@ package com.silverpeas.openoffice.util;
 import java.util.ResourceBundle;
 
 /**
- *
  * @author ehugonnet
  */
 public class MessageUtil {

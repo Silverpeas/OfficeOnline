@@ -36,14 +36,14 @@ import com.silverpeas.openoffice.OpenOfficeNotFoundException;
 import com.silverpeas.openoffice.util.StreamReader;
 
 /**
- *
  * @author Emmanuel Hugonnet
  */
 public class WhereisMacHelper extends OpenOfficeFinder {
 
   private static final String OPENOFFICE_EXE = "soffice";
   private static final String WHEREIS_CMD = "whereis";
-  private static final String DEFAULT_PATH = "/Applications/OpenOffice.org.app/Contents/MacOS/soffice";
+  private static final String DEFAULT_PATH =
+      "/Applications/OpenOffice.org.app/Contents/MacOS/soffice";
 
   public String whereis() {
     try {

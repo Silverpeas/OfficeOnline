@@ -34,12 +34,14 @@ import java.util.logging.Logger;
 import javax.activation.MimetypesFileTypeMap;
 
 import com.silverpeas.openoffice.util.MsOfficeType;
+import com.silverpeas.openoffice.util.OsEnum;
 import com.silverpeas.openoffice.util.PasswordManager;
 import com.silverpeas.openoffice.util.UrlExtractor;
 import com.silverpeas.openoffice.windows.MsOfficePathFinder;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 /**
- * 
  * @author Emmanuel Hugonnet
  */
 public class Launcher {
@@ -49,8 +51,7 @@ public class Launcher {
   static Logger logger = Logger.getLogger(Launcher.class.getName());
 
   /**
-   * @param args
-   *            the command line arguments
+   * @param args the command line arguments
    */
   public static void main(String[] args) throws OfficeNotFoundException {
     logger.log(Level.INFO,
@@ -60,7 +61,7 @@ public class Launcher {
       String url = UrlExtractor.extractUrl(args[0]);
       logger.log(Level.INFO, MessageUtil.getMessage("info.url.decoded") + url);
       if (args[1] != null && !"".equals(args[1].trim())) {
-        logger.log(Level.INFO,MessageUtil.getMessage("info.default.path")
+        logger.log(Level.INFO, MessageUtil.getMessage("info.default.path")
             + ' ' + UrlExtractor.decodePath(args[1]));
         MsOfficePathFinder.basePath = UrlExtractor.decodePath(args[1]);
       }
@@ -69,8 +70,9 @@ public class Launcher {
         authInfo = PasswordManager.extractAuthenticationInfo(args[2], args[3]);
       }
       MsOfficeType contentType = getContentType(UrlExtractor.decodeUrl(args[0]));
-      logger.log(Level.FINE, MessageUtil.getMessage("info.document.type") +
-          contentType);
+      logger.log(Level.FINE, MessageUtil.getMessage("info.document.type")
+          + contentType);
+      defineLookAndFeel();
       System.exit(OfficeLauncher.launch(contentType, url, authInfo));
     } catch (IOException ex) {
       logger.log(Level.SEVERE, MessageUtil.getMessage("error.message.general"),
@@ -86,6 +88,24 @@ public class Launcher {
       MessageDisplayer.displayError(ex);
     } finally {
       System.exit(0);
+    }
+  }
+
+  protected static void defineLookAndFeel() {
+    try {
+      try {
+        if (OsEnum.getOS() == OsEnum.WINDOWS_VISTA || OsEnum.getOS() == OsEnum.WINDOWS_XP) {
+          UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        }
+      } catch (ClassNotFoundException ex) {
+        logger.log(Level.INFO, null, ex);
+      } catch (InstantiationException ex) {
+        logger.log(Level.INFO, null, ex);
+      } catch (IllegalAccessException ex) {
+        logger.log(Level.INFO, null, ex);
+      }
+    } catch (UnsupportedLookAndFeelException ex) {
+      logger.log(Level.INFO, "Unable to load native look and feel");
     }
   }
 

@@ -33,7 +33,6 @@ import com.silverpeas.openoffice.OpenOfficeFinder;
 import java.io.File;
 
 /**
- *
  * @author ehugonnet
  */
 public class MsOfficePathFinder implements OfficeFinder {

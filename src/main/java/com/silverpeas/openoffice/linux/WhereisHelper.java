@@ -35,7 +35,6 @@ import java.util.logging.Logger;
 import com.silverpeas.openoffice.util.StreamReader;
 
 /**
- *
  * @author Emmanuel Hugonnet
  */
 public class WhereisHelper extends OpenOfficeFinder {

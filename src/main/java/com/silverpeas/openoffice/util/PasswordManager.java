@@ -39,20 +39,19 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
- *
  * @author ehugonnet
  */
 public class PasswordManager {
 
-  private final static byte[] KEY = new byte[]{-23, -75, -2, -17, 79, -94, -125,
-    -14};
+  private final static byte[] KEY = new byte[] { -23, -75, -2, -17, 79, -94, -125,
+      -14 };
   private final static Key decryptionKey = new SecretKeySpec(KEY, "DES");
   private final static String DIGITS = "0123456789abcdef";
 
   /**
    * Converts a hexadecimal String to clear password.
    * @param hex hexadecimal String to convert
-   * @return	resulting password
+   * @return resulting password
    */
   public static String decodePassword(String encodedPassword) throws
       UnsupportedEncodingException, GeneralSecurityException {
@@ -71,7 +70,7 @@ public class PasswordManager {
   /**
    * Converts a password to a hexadecimal String containing the DES encrypted password.
    * @param password the password to encrypt
-   * @return	resulting hexadecimal String
+   * @return resulting hexadecimal String
    */
   public static String encodePassword(String password) throws
       UnsupportedEncodingException, GeneralSecurityException {
@@ -89,13 +88,13 @@ public class PasswordManager {
 
   /**
    * Build an authentication objec from arguments
-   * @param args	arguments passed through JNLP
+   * @param args arguments passed through JNLP
    * @return the Authentication object
    */
   public static AuthenticationInfo extractAuthenticationInfo(String login,
       String encodedPassword) {
     String clearPwd = null;
-    try {      
+    try {
       clearPwd = decodePassword(encodedPassword);
     } catch (Exception e) {
       Logger.getLogger(Launcher.class.getName()).log(Level.SEVERE,

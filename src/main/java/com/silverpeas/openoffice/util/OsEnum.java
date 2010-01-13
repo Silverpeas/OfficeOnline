@@ -30,15 +30,12 @@ package com.silverpeas.openoffice.util;
 import java.io.File;
 
 /**
- *
  * @author Emmanuel Hugonnet
  */
 public enum OsEnum {
 
-  WINDOWS_XP("Application Data\\Mozilla\\Firefox\\Profiles"),
-  WINDOWS_VISTA("Appdata\\Roaming\\Mozilla\\Firefox"),
-  LINUX(".mozilla/firefox"),
-  MAC_OSX(".mozilla/firefox");
+  WINDOWS_XP("Application Data\\Mozilla\\Firefox\\Profiles"), WINDOWS_VISTA(
+      "Appdata\\Roaming\\Mozilla\\Firefox"), LINUX(".mozilla/firefox"), MAC_OSX(".mozilla/firefox");
   protected String profilesDir;
 
   OsEnum(String profilesDir) {

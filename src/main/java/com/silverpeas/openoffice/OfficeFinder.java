@@ -28,7 +28,6 @@
 package com.silverpeas.openoffice;
 
 /**
- *
  * @author Emmanuel Hugonnet
  */
 public interface OfficeFinder {
@@ -40,6 +39,6 @@ public interface OfficeFinder {
   public String findWordEditor() throws OfficeNotFoundException;
 
   public String findOther() throws OfficeNotFoundException;
-  
+
   public boolean isMicrosoftOffice2007();
 }

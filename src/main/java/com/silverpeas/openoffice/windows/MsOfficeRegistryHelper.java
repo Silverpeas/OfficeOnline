@@ -34,7 +34,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- *
  * @author Emmanuel Hugonnet
  */
 public class MsOfficeRegistryHelper implements OfficeFinder {

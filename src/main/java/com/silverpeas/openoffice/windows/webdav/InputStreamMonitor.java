@@ -21,41 +21,43 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.silverpeas.openoffice;
+package com.silverpeas.openoffice.windows.webdav;
+
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
- * @author Emmanuel Hugonnet
+ * @author ehugonnet
  */
-public abstract class OpenOfficeFinder implements OfficeFinder {
+public class InputStreamMonitor {
+  Set<PropertyChangeListener> listeners = new HashSet<PropertyChangeListener>();
+  private int progress = 0;
 
-  @Override
-  public String findSpreadsheet() throws OfficeNotFoundException {
-    return findOpenOffice();
+  public void setProgress(int newProgress) {
+    PropertyChangeEvent event =
+        new PropertyChangeEvent(this, "progress", this.progress, newProgress);
+    this.progress = newProgress;
+    firePropertyChange(event);
   }
 
-  @Override
-  public String findPresentation() throws OfficeNotFoundException {
-    return findOpenOffice();
+  public void firePropertyChange(PropertyChangeEvent event) {
+    for (PropertyChangeListener listener : listeners) {
+      listener.propertyChange(event);
+    }
   }
 
-  @Override
-  public String findWordEditor() throws OfficeNotFoundException {
-    return findOpenOffice();
+  public void addPropertyChangeListener(PropertyChangeListener listener) {
+    listeners.add(listener);
   }
 
-  @Override
-  public String findOther() throws OfficeNotFoundException {
-    return findOpenOffice();
+  public void removePropertyChangeListener(PropertyChangeListener listener) {
+    listeners.remove(listener);
   }
-
-  @Override
-  public boolean isMicrosoftOffice2007() {
-    return false;
-  }
-
-  public abstract String findOpenOffice() throws OfficeNotFoundException;
 }

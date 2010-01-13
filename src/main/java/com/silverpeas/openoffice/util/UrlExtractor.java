@@ -34,7 +34,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
  * @author ehsavoie
  */
 public class UrlExtractor {
@@ -59,8 +58,7 @@ public class UrlExtractor {
   }
 
   /**
-   * Escape the url to manage whitespaces.
-   * If we are on Windows the url is surrounded with quotes.
+   * Escape the url to manage whitespaces. If we are on Windows the url is surrounded with quotes.
    * If we are on Unix the whitespaces are escaped with %20.
    * @param url the url with whitespaces.
    * @return the url with whitespaces escaped.
@@ -80,15 +78,14 @@ public class UrlExtractor {
   }
 
   /**
-   * Escape the url to manage whitespaces.
-   * If we are on Windows the url is surrounded with quotes.
+   * Escape the url to manage whitespaces. If we are on Windows the url is surrounded with quotes.
    * If we are on Unix the whitespaces are escaped with %20.
    * @param url the url with whitespaces.
    * @return the url with whitespaces escaped.
    */
-   public static String escapeWhiteSpaces(String url) {
-     return url.replaceAll(" ", "%20");
-   }
+  public static String escapeWhiteSpaces(String url) {
+    return url.replaceAll(" ", "%20");
+  }
 
   /**
    * Decode and espace whitespaces from the url.
