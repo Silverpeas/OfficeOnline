@@ -48,7 +48,7 @@ public class OfficeLauncher {
    * silverpeas, still using webdav 4) delete temp file locally
    */
   public static int launch(MsOfficeType type, String url, AuthenticationInfo authInfo)
-          throws IOException, InterruptedException, OfficeNotFoundException {
+      throws IOException, InterruptedException, OfficeNotFoundException {
     OfficeFinder finder = FinderFactory.getFinder(type);
     boolean modeDisconnected = (OsEnum.getOS() == OsEnum.WINDOWS_VISTA ||
         OsEnum.getOS() == OsEnum.MAC_OSX) && (finder.isMicrosoftOffice2007());

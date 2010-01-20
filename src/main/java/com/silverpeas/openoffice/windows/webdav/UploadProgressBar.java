@@ -136,7 +136,7 @@ public class UploadProgressBar extends JPanel implements PropertyChangeListener 
       int progress = (Integer) evt.getNewValue();
       progressBar.setValue(progress);
       taskOutput.setText(String.format(outputFormat,
-              100 * progressBar.getPercentComplete()));
+          100 * progressBar.getPercentComplete()));
     }
   }
 
@@ -175,7 +175,7 @@ public class UploadProgressBar extends JPanel implements PropertyChangeListener 
     // Center the frame
     Dimension screenDimension = getToolkit().getScreenSize();
     frame.setLocation((screenDimension.width - FRAME_WIDTH) / 2,
-            (screenDimension.height - FRAME_HEIGHT) / 2);
+        (screenDimension.height - FRAME_HEIGHT) / 2);
     // Display the window.
     frame.pack();
     frame.setVisible(true);

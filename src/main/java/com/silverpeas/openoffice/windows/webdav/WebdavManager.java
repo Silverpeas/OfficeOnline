@@ -210,7 +210,7 @@ public class WebdavManager {
     progress.setMaximum(new Long(file.length()).intValue());
     progress.setMessage(MessageUtil.getMessage("uploading.remote.file") + ' ' +
         uri.getPath().substring(
-            uri.getPath().lastIndexOf('/') + 1));
+        uri.getPath().lastIndexOf('/') + 1));
     MonitoredInputStream is =
         new MonitoredInputStream(new BufferedInputStream(new FileInputStream(file)));
     is.addPropertyChangeListener(progress);
