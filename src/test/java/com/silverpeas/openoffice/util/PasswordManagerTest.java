@@ -59,6 +59,10 @@ public class PasswordManagerTest extends TestCase {
     String expResult = "helloworld";
     String result = PasswordManager.decodePassword(encodedPassword);
     assertEquals(expResult, result);
+    encodedPassword = "4e2bb11fc119471ff3c0ba210d9843d1";
+    expResult = "héhèhàhh";
+    result = PasswordManager.decodePassword(encodedPassword);
+    assertEquals(expResult, result);
   }
 
   /**
@@ -68,6 +72,10 @@ public class PasswordManagerTest extends TestCase {
     String password = "helloworld";
     String expResult = "5f6b7130460e9b316ca968ec952d3fa3";
     String result = PasswordManager.encodePassword(password);
+    assertEquals(expResult, result);
+    password = "héhèhàhh";
+    expResult = "4e2bb11fc119471ff3c0ba210d9843d1";
+    result = PasswordManager.encodePassword(password);
     assertEquals(expResult, result);
   }
 

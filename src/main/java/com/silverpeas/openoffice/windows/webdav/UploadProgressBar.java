@@ -48,6 +48,8 @@ public class UploadProgressBar extends JPanel implements PropertyChangeListener 
   private JLabel messageLabel;
   private boolean display = false;
   private JFrame frame = null;
+  private String title = MessageUtil.getMessage("upload.file.title");
+  private String outputFormat = MessageUtil.getMessage("upload.file.task");
 
   public UploadProgressBar() {
     super(new BorderLayout());
@@ -87,11 +89,38 @@ public class UploadProgressBar extends JPanel implements PropertyChangeListener 
   }
 
   /**
+   * Defines the minimum value for the progress bar.
+   * @param min the minimum value for the progress bar.
+   */
+  public void setOutputFormat(String outputFormat) {
+    this.outputFormat = outputFormat;
+  }
+
+  /**
    * Defines the message to be displayed before the progress bar.
    * @param message the message to be displayed before the progress bar.
    */
   public void setMessage(String message) {
     messageLabel.setText(message);
+  }
+
+  /**
+   * Defines the title of the progress bar dialog.
+   * @param title the title of the progress bar dialog.
+   */
+  public void setTitle(String title) {
+    this.title = title;
+    if (this.frame != null) {
+      this.frame.setTitle(title);
+    }
+  }
+
+  /**
+   * Defines the title of the progress bar dialog.
+   * @param title the title of the progress bar dialog.
+   */
+  public void setProgress(int progress) {
+    propertyChange(new PropertyChangeEvent(this, "progress", 0, progress));
   }
 
   /**
@@ -106,7 +135,7 @@ public class UploadProgressBar extends JPanel implements PropertyChangeListener 
       }
       int progress = (Integer) evt.getNewValue();
       progressBar.setValue(progress);
-      taskOutput.setText(String.format(MessageUtil.getMessage("upload.file.task"),
+      taskOutput.setText(String.format(outputFormat,
               100 * progressBar.getPercentComplete()));
     }
   }
@@ -116,6 +145,7 @@ public class UploadProgressBar extends JPanel implements PropertyChangeListener 
    */
   private void start() {
     javax.swing.SwingUtilities.invokeLater(new Runnable() {
+
       @Override
       public void run() {
         createAndShowGUI();
@@ -137,7 +167,7 @@ public class UploadProgressBar extends JPanel implements PropertyChangeListener 
    */
   private void createAndShowGUI() {
     // Create and set up the window.
-    frame = new JFrame(MessageUtil.getMessage("upload.file.title"));
+    frame = new JFrame(title);
     frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
     frame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
     this.setOpaque(true); // content panes must be opaque
