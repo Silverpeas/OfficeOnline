@@ -35,6 +35,10 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
     </dependency>
+     <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jcl-over-slf4j</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
@@ -80,6 +84,15 @@
                   <goal>sign</goal>
                 </goals>
               </execution>
+              <execution>
+                <id>SigningDependencies</id>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+                <configuration>
+                  <archiveDirectory>${project.build.directory}/dependency</archiveDirectory>
+                </configuration>
+              </execution>
             </executions>
             <configuration>
               <alias>Silverpeas</alias>
@@ -88,7 +101,22 @@
               <storepass>${silverpeas.storepass}</storepass>
               <verbose>true</verbose>
               <keypass>${silverpeas.storepass}</keypass>
+              <removeExistingSignatures>true</removeExistingSignatures>              
             </configuration>
+          </plugin>
+          <plugin>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>Dependencies</id>
+                <goals>
+                  <goal>copy-dependencies</goal>
+                </goals>
+                <configuration>
+                  <includeScope>runtime</includeScope>
+                </configuration>
+              </execution>
+            </executions>
           </plugin>
         </plugins>
       </build>
