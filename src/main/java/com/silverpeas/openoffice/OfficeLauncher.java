@@ -82,9 +82,13 @@ public class OfficeLauncher {
     logger.log(Level.INFO, "The command line: " + path + ' ' + url);
     if (modeDisconnected) {
       try {
-        FileWebDavAccessManager webdavAccessManager = new FileWebDavAccessManager(auth);
-        url = url.substring(1, url.length() - 1);
-        String tmpFilePath = webdavAccessManager.retrieveFile(url);
+        String webdavUrl = url;
+        final FileWebDavAccessManager webdavAccessManager = new FileWebDavAccessManager(auth);
+        if ('"' == url.charAt(0)) {
+          webdavUrl = url.substring(1, url.length() - 1);
+        }
+        String tmpFilePath = webdavAccessManager.retrieveFile(webdavUrl);
+        logger.log(Level.INFO, "The exact exec line: " + path + ' ' + tmpFilePath);
         Process process = Runtime.getRuntime().exec(path + ' ' + tmpFilePath);
         process.waitFor();
         webdavAccessManager.pushFile(tmpFilePath, url);

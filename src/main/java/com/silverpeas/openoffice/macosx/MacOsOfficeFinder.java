@@ -31,11 +31,15 @@ import com.silverpeas.openoffice.OfficeFinder;
 import com.silverpeas.openoffice.OfficeNotFoundException;
 import com.silverpeas.openoffice.OpenOfficeFinder;
 import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author ehugonnet
  */
 public class MacOsOfficeFinder implements OfficeFinder {
+
+  static Logger logger = Logger.getLogger(MacOsOfficeFinder.class.getName());
 
   protected static final OpenOfficeFinder finder = new WhereisMacHelper();
   protected static final String OFFICE_PATH =
@@ -73,7 +77,7 @@ public class MacOsOfficeFinder implements OfficeFinder {
 
   @Override
   public String findOther() throws OfficeNotFoundException {
-    throw new UnsupportedOperationException("Not supported yet.");
+    return finder.findOther();
   }
 
   @Override
@@ -83,6 +87,7 @@ public class MacOsOfficeFinder implements OfficeFinder {
 
   protected boolean isMsOfficePresent() {
     File officeDir = new File(OFFICE_PATH);
+    logger.log(Level.INFO, "Looking for file " + OFFICE_PATH + " but found " + officeDir.exists());
     return officeDir.exists();
   }
 

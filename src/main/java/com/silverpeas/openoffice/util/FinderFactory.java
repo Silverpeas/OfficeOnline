@@ -39,7 +39,7 @@ import com.silverpeas.openoffice.windows.WindowsOpenOfficeFinder;
  */
 public class FinderFactory {
 
-  public static OfficeFinder getFinder(MsOfficeType contentType) {
+  public static OfficeFinder getFinder(final MsOfficeType contentType) {
     OsEnum os = OsEnum.getOS(System.getProperty("os.name"));
     switch (os) {
       case WINDOWS_XP:
@@ -51,7 +51,7 @@ public class FinderFactory {
       case LINUX:
         return new WhereisHelper();
       case MAC_OSX:
-        return new WhereisMacHelper();
+        return new MacOsOfficeFinder();
       default:
         return new WhereisHelper();
     }

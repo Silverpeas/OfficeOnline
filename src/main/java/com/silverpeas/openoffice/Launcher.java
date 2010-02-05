@@ -53,7 +53,7 @@ public class Launcher {
   /**
    * @param args the command line arguments
    */
-  public static void main(String[] args) throws OfficeNotFoundException {
+  public static void main(final String[] args) throws OfficeNotFoundException {
     logger.log(Level.INFO,
         MessageUtil.getMessage("app.title") + " version " + LAUNCHER_VERSION);
     logger.log(Level.INFO, MessageUtil.getMessage("info.url.encoded") + args[0]);
