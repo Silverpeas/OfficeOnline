@@ -36,7 +36,7 @@ import junit.framework.TestCase;
  */
 public class RegistryHelperTest extends TestCase {
 
-  public static final String INSTALLED_VERSION = "3.1";
+  public static final String INSTALLED_VERSION = "3.2";
   public static final String NOT_INSTALLED_VERSION = "2.0";
 
   public RegistryHelperTest(String testName) {

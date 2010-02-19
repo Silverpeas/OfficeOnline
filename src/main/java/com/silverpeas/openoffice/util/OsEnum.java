@@ -35,7 +35,8 @@ import java.io.File;
 public enum OsEnum {
 
   WINDOWS_XP("Application Data\\Mozilla\\Firefox\\Profiles"), WINDOWS_VISTA(
-      "Appdata\\Roaming\\Mozilla\\Firefox"), LINUX(".mozilla/firefox"), MAC_OSX(".mozilla/firefox");
+      "Appdata\\Roaming\\Mozilla\\Firefox"), WINDOWS_SEVEN(
+      "Appdata\\Roaming\\Mozilla\\Firefox"),LINUX(".mozilla/firefox"), MAC_OSX(".mozilla/firefox");
   protected String profilesDir;
 
   OsEnum(String profilesDir) {
@@ -45,6 +46,9 @@ public enum OsEnum {
   public static OsEnum getOS(String value) {
     if ("Windows Vista".equalsIgnoreCase(value)) {
       return WINDOWS_VISTA;
+    }
+    if ("Windows 7".equalsIgnoreCase(value)) {
+      return WINDOWS_SEVEN;
     }
     if ("Windows XP".equalsIgnoreCase(value) || value.startsWith("Windows ")) {
       return WINDOWS_XP;
