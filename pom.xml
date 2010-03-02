@@ -95,13 +95,13 @@
               </execution>
             </executions>
             <configuration>
-              <alias>Silverpeas</alias>
-              <storetype>pkcs12</storetype>
+              <alias>silverpeas</alias>
+              <storetype>jks</storetype>
               <keystore>${silverpeas.keystore}</keystore>
               <storepass>${silverpeas.storepass}</storepass>
               <verbose>true</verbose>
               <keypass>${silverpeas.storepass}</keypass>
-              <removeExistingSignatures>true</removeExistingSignatures>              
+              <removeExistingSignatures>true</removeExistingSignatures>
             </configuration>
           </plugin>
           <plugin>
@@ -125,7 +125,7 @@
 
 
   <properties>
-    <silverpeas.keystore>${env.SILVERPEAS_HOME}/bin/silverpeas.p12</silverpeas.keystore>
+    <silverpeas.keystore>${env.SILVERPEAS_HOME}/bin/silverpeas.jks</silverpeas.keystore>
     <silverpeas.storepass>changeit</silverpeas.storepass>
   </properties>
 
