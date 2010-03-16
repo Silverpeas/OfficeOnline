@@ -48,21 +48,19 @@ public class Launcher {
 
   static final String LAUNCHER_VERSION = "2.12";
   static final MimetypesFileTypeMap mimeTypes = new MimetypesFileTypeMap();
-  static Logger logger = Logger.getLogger(Launcher.class.getName());
+  static final Logger logger = Logger.getLogger(Launcher.class.getName());
 
   /**
    * @param args the command line arguments
    */
   public static void main(final String[] args) throws OfficeNotFoundException {
-    logger.log(Level.INFO,
-        MessageUtil.getMessage("app.title") + " version " + LAUNCHER_VERSION);
-    logger.log(Level.INFO, MessageUtil.getMessage("info.url.encoded") + args[0]);
+    logger.log(Level.INFO, "{0} version {1}", new Object[]{MessageUtil.getMessage("app.title"), LAUNCHER_VERSION});
+    logger.log(Level.INFO, "{0}{1}", new Object[]{MessageUtil.getMessage("info.url.encoded"), args[0]});
     try {
       String url = UrlExtractor.extractUrl(args[0]);
-      logger.log(Level.INFO, MessageUtil.getMessage("info.url.decoded") + url);
+      logger.log(Level.INFO, "{0}{1}", new Object[]{MessageUtil.getMessage("info.url.decoded"), url});
       if (args[1] != null && !"".equals(args[1].trim())) {
-        logger.log(Level.INFO, MessageUtil.getMessage("info.default.path")
-            + ' ' + UrlExtractor.decodePath(args[1]));
+        logger.log(Level.INFO, "{0} {2}", new Object[]{MessageUtil.getMessage("info.default.path"), UrlExtractor.decodePath(args[1])});
         MsOfficePathFinder.basePath = UrlExtractor.decodePath(args[1]);
       }
       AuthenticationInfo authInfo = null;
@@ -70,21 +68,20 @@ public class Launcher {
         authInfo = PasswordManager.extractAuthenticationInfo(args[2], args[3]);
       }
       MsOfficeType contentType = getContentType(UrlExtractor.decodeUrl(args[0]));
-      logger.log(Level.FINE, MessageUtil.getMessage("info.document.type")
-          + contentType);
+      logger.log(Level.FINE, "{0}{1}", new Object[]{MessageUtil.getMessage("info.document.type"), contentType});
       defineLookAndFeel();
       System.exit(OfficeLauncher.launch(contentType, url, authInfo));
     } catch (IOException ex) {
       logger.log(Level.SEVERE, MessageUtil.getMessage("error.message.general"),
-          ex);
+              ex);
       MessageDisplayer.displayError(ex);
     } catch (InterruptedException ex) {
       logger.log(Level.SEVERE, MessageUtil.getMessage("error.message.general"),
-          ex);
+              ex);
       MessageDisplayer.displayError(ex);
     } catch (Throwable ex) {
       logger.log(Level.SEVERE, MessageUtil.getMessage("error.message.general"),
-          ex);
+              ex);
       MessageDisplayer.displayError(ex);
     } finally {
       System.exit(0);
@@ -94,7 +91,8 @@ public class Launcher {
   protected static void defineLookAndFeel() {
     try {
       try {
-        if (OsEnum.getOS() == OsEnum.WINDOWS_VISTA || OsEnum.getOS() == OsEnum.WINDOWS_XP) {
+        if (OsEnum.getOS() == OsEnum.WINDOWS_VISTA || OsEnum.getOS() == OsEnum.WINDOWS_XP
+                || OsEnum.getOS() == OsEnum.WINDOWS_SEVEN) {
           UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         }
       } catch (ClassNotFoundException ex) {
@@ -110,7 +108,7 @@ public class Launcher {
   }
 
   protected static MsOfficeType getContentType(String url)
-      throws MalformedURLException {
+          throws MalformedURLException {
     String fileName = new URL(url).getFile();
     String contentType = mimeTypes.getContentType(fileName.toLowerCase());
     return MsOfficeType.valueOfMimeType(contentType);

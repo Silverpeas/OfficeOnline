@@ -30,6 +30,8 @@ package com.silverpeas.openoffice.windows;
 import com.silverpeas.openoffice.OfficeFinder;
 import com.silverpeas.openoffice.OfficeNotFoundException;
 import com.silverpeas.openoffice.util.RegistryKeyReader;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -38,8 +40,9 @@ import java.util.regex.Pattern;
  */
 public class MsOfficeRegistryHelper implements OfficeFinder {
 
-  static final OfficeFinder msOfficeFinder = new MsOfficePathFinder();
+  static final Logger logger = Logger.getLogger(MsOfficeRegistryHelper.class.getName());
 
+  static final OfficeFinder msOfficeFinder = new MsOfficePathFinder();
   static final String ACCESS = "Access.Application";
   static final String EXCEL = "Excel.Application";
   static final String OUTLOOK = "Outlook.Application";
@@ -47,13 +50,17 @@ public class MsOfficeRegistryHelper implements OfficeFinder {
   static final String WORD = "Word.Application";
   static final String FRONTPAGE = "FrontPage.Application";
   static final String BASE_APPLICATION_KEY =
-      "\"HKEY_LOCAL_MACHINE\\Software\\Classes\\";
+          "\"HKEY_LOCAL_MACHINE\\Software\\Classes\\";
   static final String BASE_KEY_CLSID =
-      "\"HKEY_LOCAL_MACHINE\\Software\\Classes\\CLSID\\";
+          "\"HKEY_LOCAL_MACHINE\\Software\\Classes\\CLSID\\";
   static final Pattern AUTOMATION = Pattern.compile(
-      "\\s*/[aA][uU][tT][oO][mM][aA][tT][iI][oO][nN]\\s*");
-  static final String BASE_MSOFFICE_2007_KEY =
-      "\"HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Office\\12.0\" /ve";
+          "\\s*/[aA][uU][tT][oO][mM][aA][tT][iI][oO][nN]\\s*");
+  static final String BASE_MSOFFICE_WORD_2007_KEY =
+          "\"HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Office\\12.0\\Word\\InstallRoot\" /ve";
+  static final String BASE_MSOFFICE_EXCEL_2007_KEY =
+          "\"HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Office\\12.0\\Excel\\InstallRoot\" /ve";
+  static final String BASE_MSOFFICE_POWERPOINT_2007_KEY =
+          "\"HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Office\\12.0\\PowerPoint\\InstallRoot\" /ve";
 
   protected String getClsid(String type) {
     return RegistryKeyReader.readKey(BASE_APPLICATION_KEY + type + "\\CLSID\"");
@@ -62,8 +69,8 @@ public class MsOfficeRegistryHelper implements OfficeFinder {
   protected String getPath(String type) {
     String clsid = getClsid(type);
     if (clsid != null) {
-      String path = RegistryKeyReader.readKey(BASE_KEY_CLSID + clsid +
-          "\\LocalServer32\"");
+      String path = RegistryKeyReader.readKey(BASE_KEY_CLSID + clsid
+              + "\\LocalServer32\"");
       if (path != null) {
         return '"' + extractPath(path) + '"';
       }
@@ -116,7 +123,11 @@ public class MsOfficeRegistryHelper implements OfficeFinder {
 
   @Override
   public boolean isMicrosoftOffice2007() {
-    return (RegistryKeyReader.readKey(BASE_MSOFFICE_2007_KEY) != null);
+    logger.log(Level.INFO, "Are we using Word 2007 : {0}", RegistryKeyReader.readKey(BASE_MSOFFICE_WORD_2007_KEY) != null);
+    logger.log(Level.INFO, "Are we using Excel 2007 : {0}", RegistryKeyReader.readKey(BASE_MSOFFICE_EXCEL_2007_KEY) != null);
+    logger.log(Level.INFO, "Are we using Powerpoint 2007 : {0}", RegistryKeyReader.readKey(BASE_MSOFFICE_POWERPOINT_2007_KEY) != null);
+    return (RegistryKeyReader.readKey(BASE_MSOFFICE_WORD_2007_KEY) != null
+            || RegistryKeyReader.readKey(BASE_MSOFFICE_EXCEL_2007_KEY) != null
+            || RegistryKeyReader.readKey(BASE_MSOFFICE_POWERPOINT_2007_KEY) != null);
   }
-
 }

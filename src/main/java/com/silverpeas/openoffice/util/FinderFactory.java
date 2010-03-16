@@ -30,7 +30,6 @@ package com.silverpeas.openoffice.util;
 import com.silverpeas.openoffice.OfficeFinder;
 import com.silverpeas.openoffice.linux.WhereisHelper;
 import com.silverpeas.openoffice.macosx.MacOsOfficeFinder;
-import com.silverpeas.openoffice.macosx.WhereisMacHelper;
 import com.silverpeas.openoffice.windows.MsOfficeRegistryHelper;
 import com.silverpeas.openoffice.windows.WindowsOpenOfficeFinder;
 
@@ -44,6 +43,7 @@ public class FinderFactory {
     switch (os) {
       case WINDOWS_XP:
       case WINDOWS_VISTA:
+      case WINDOWS_SEVEN:
         if (contentType.isMsOfficeCompatible()) {
           return new MsOfficeRegistryHelper();
         }

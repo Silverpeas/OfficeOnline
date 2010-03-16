@@ -65,8 +65,7 @@ import org.apache.jackrabbit.webdav.client.methods.UnLockMethod;
 public class WebdavManager {
 
   private HttpClient client;
-  static Logger logger = Logger.getLogger(
-      WebdavManager.class.getName());
+  static final Logger logger = Logger.getLogger(WebdavManager.class.getName());
 
   /**
    * Prepare HTTP connections to the WebDav server
