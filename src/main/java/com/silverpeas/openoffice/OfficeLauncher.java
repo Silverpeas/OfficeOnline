@@ -9,7 +9,7 @@
  * As a special exception to the terms and conditions of version 3.0 of
  * the GPL, you may redistribute this Program in connection with Free/Libre
  * Open Source Software ("FLOSS") applications as described in Silverpeas's
- * FLOSS exception.  You should have recieved a copy of the text describing
+ * FLOSS exception.  You should have received a copy of the text describing
  * the FLOSS exception, and it is also available here:
  * "http://repository.silverpeas.com/legal/licensing"
  *
@@ -21,6 +21,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package com.silverpeas.openoffice;
 
 import com.silverpeas.openoffice.windows.FileWebDavAccessManager;
@@ -51,9 +52,9 @@ public class OfficeLauncher {
       throws IOException, InterruptedException, OfficeNotFoundException {
     OfficeFinder finder = FinderFactory.getFinder(type);
     logger.log(Level.INFO, "Are we using Office 2007 : {0}", finder.isMicrosoftOffice2007());
-    logger.log(Level.INFO, "We are on {0} OS",  OsEnum.getOS());
+    logger.log(Level.INFO, "We are on {0} OS", OsEnum.getOS());
     boolean modeDisconnected = (OsEnum.getOS() == OsEnum.WINDOWS_VISTA ||
-        OsEnum.getOS() == OsEnum.WINDOWS_SEVEN ||OsEnum.getOS() == OsEnum.MAC_OSX)
+        OsEnum.getOS() == OsEnum.WINDOWS_SEVEN || OsEnum.getOS() == OsEnum.MAC_OSX)
         && finder.isMicrosoftOffice2007();
     switch (type) {
       case EXCEL:
@@ -82,7 +83,7 @@ public class OfficeLauncher {
       AuthenticationInfo auth) throws IOException, InterruptedException {
     logger.log(Level.INFO, "The path: {0}", path);
     logger.log(Level.INFO, "The url: {0}", url);
-    logger.log(Level.INFO, "The command line: {0} {1}", new Object[]{path, url});
+    logger.log(Level.INFO, "The command line: {0} {1}", new Object[] { path, url });
     if (modeDisconnected) {
       try {
         String webdavUrl = url;
@@ -91,7 +92,7 @@ public class OfficeLauncher {
           webdavUrl = url.substring(1, url.length() - 1);
         }
         String tmpFilePath = webdavAccessManager.retrieveFile(webdavUrl);
-        logger.log(Level.INFO, "The exact exec line: {0} {1}", new Object[]{path, tmpFilePath});
+        logger.log(Level.INFO, "The exact exec line: {0} {1}", new Object[] { path, tmpFilePath });
         Process process = Runtime.getRuntime().exec(path + ' ' + tmpFilePath);
         process.waitFor();
         webdavAccessManager.pushFile(tmpFilePath, url);
@@ -106,7 +107,7 @@ public class OfficeLauncher {
       }
     } else {
       // Standard mode : just open it
-      logger.log(Level.INFO, "The exact exec line: {0} {2}", new Object[]{path, url});
+      logger.log(Level.INFO, "The exact exec line: {0} {2}", new Object[] { path, url });
       Process process = Runtime.getRuntime().exec(path + ' ' + url);
       return process.waitFor();
     }

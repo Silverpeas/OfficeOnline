@@ -9,7 +9,7 @@
  * As a special exception to the terms and conditions of version 3.0 of
  * the GPL, you may redistribute this Program in connection with Free/Libre
  * Open Source Software ("FLOSS") applications as described in Silverpeas's
- * FLOSS exception.  You should have recieved a copy of the text describing
+ * FLOSS exception.  You should have received a copy of the text describing
  * the FLOSS exception, and it is also available here:
  * "http://repository.silverpeas.com/legal/licensing"
  *
@@ -21,12 +21,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package com.silverpeas.openoffice.windows;
 
+import com.silverpeas.openoffice.util.OsEnum;
 import com.silverpeas.openoffice.util.RegistryKeyReader;
 import junit.framework.TestCase;
 
@@ -54,11 +52,11 @@ public class RegistryHelperTest extends TestCase {
   }
 
   public void testReadKey() throws Exception {
-    if (!System.getProperty("os.name").startsWith("Windows")) {
+    if (OsEnum.getOS() != OsEnum.LINUX && OsEnum.getOS() != OsEnum.MAC_OSX) {
       return;
     }
     String clockFormat = RegistryKeyReader.readKey(
-        "\"HKEY_CURRENT_USER\\Software\\Microsoft\\Clock\" /v iFormat");
+            "\"HKEY_CURRENT_USER\\Software\\Microsoft\\Clock\" /v iFormat");
     assertNotNull(clockFormat);
     assertEquals("1", clockFormat);
   }
@@ -67,11 +65,14 @@ public class RegistryHelperTest extends TestCase {
     if (!System.getProperty("os.name").startsWith("Windows")) {
       return;
     }
+    if (!System.getenv("ProgramFiles").equals(System.getenv("ProgramW6432"))) {
+      return;
+    }
     WindowsOpenOfficeFinder helper = new WindowsOpenOfficeFinder();
     String openOffice2_4 = helper.getOpenOfficePath(INSTALLED_VERSION);
     assertNotNull(openOffice2_4);
-    assertEquals("C:\\Program Files\\OpenOffice.org 3\\program\\soffice.exe",
-        openOffice2_4);
+    assertEquals("C:\\Program Files (x86)\\OpenOffice.org 3\\program\\soffice.exe",
+            openOffice2_4);
     String openOffice2_0 = helper.getOpenOfficePath(NOT_INSTALLED_VERSION);
     assertNull(openOffice2_0);
   }
@@ -83,8 +84,6 @@ public class RegistryHelperTest extends TestCase {
     WindowsOpenOfficeFinder helper = new WindowsOpenOfficeFinder();
     String openOffice = helper.findOpenOffice();
     assertNotNull(openOffice);
-    assertEquals("\"C:\\Program Files\\OpenOffice.org 3\\program\\soffice.exe\"",
-        openOffice);
-
+    assertEquals("\"C:\\Program Files (x86)\\OpenOffice.org 3\\program\\soffice.exe\"", openOffice);
   }
 }

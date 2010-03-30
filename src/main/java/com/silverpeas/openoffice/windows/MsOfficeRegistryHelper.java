@@ -9,7 +9,7 @@
  * As a special exception to the terms and conditions of version 3.0 of
  * the GPL, you may redistribute this Program in connection with Free/Libre
  * Open Source Software ("FLOSS") applications as described in Silverpeas's
- * FLOSS exception.  You should have recieved a copy of the text describing
+ * FLOSS exception.  You should have received a copy of the text describing
  * the FLOSS exception, and it is also available here:
  * "http://repository.silverpeas.com/legal/licensing"
  *
@@ -21,10 +21,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package com.silverpeas.openoffice.windows;
 
 import com.silverpeas.openoffice.OfficeFinder;
@@ -41,7 +38,6 @@ import java.util.regex.Pattern;
 public class MsOfficeRegistryHelper implements OfficeFinder {
 
   static final Logger logger = Logger.getLogger(MsOfficeRegistryHelper.class.getName());
-
   static final OfficeFinder msOfficeFinder = new MsOfficePathFinder();
   static final String ACCESS = "Access.Application";
   static final String EXCEL = "Excel.Application";
@@ -50,17 +46,25 @@ public class MsOfficeRegistryHelper implements OfficeFinder {
   static final String WORD = "Word.Application";
   static final String FRONTPAGE = "FrontPage.Application";
   static final String BASE_APPLICATION_KEY =
-          "\"HKEY_LOCAL_MACHINE\\Software\\Classes\\";
+      "\"HKEY_LOCAL_MACHINE\\Software\\Classes\\";
   static final String BASE_KEY_CLSID =
-          "\"HKEY_LOCAL_MACHINE\\Software\\Classes\\CLSID\\";
+      "\"HKEY_LOCAL_MACHINE\\Software\\Wow6432Node\\Classes\\CLSID\\";
+  static final String BASE_KEY_64_CLSID =
+      "\"HKEY_LOCAL_MACHINE\\Software\\Classes\\CLSID\\";
   static final Pattern AUTOMATION = Pattern.compile(
-          "\\s*/[aA][uU][tT][oO][mM][aA][tT][iI][oO][nN]\\s*");
+      "\\s*/[aA][uU][tT][oO][mM][aA][tT][iI][oO][nN]\\s*");
   static final String BASE_MSOFFICE_WORD_2007_KEY =
-          "\"HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Office\\12.0\\Word\\InstallRoot\" /ve";
+      "\"HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Office\\12.0\\Word\\InstallRoot\" /ve";
   static final String BASE_MSOFFICE_EXCEL_2007_KEY =
-          "\"HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Office\\12.0\\Excel\\InstallRoot\" /ve";
+      "\"HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Office\\12.0\\Excel\\InstallRoot\" /ve";
   static final String BASE_MSOFFICE_POWERPOINT_2007_KEY =
-          "\"HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Office\\12.0\\PowerPoint\\InstallRoot\" /ve";
+      "\"HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Office\\12.0\\PowerPoint\\InstallRoot\" /ve";
+  static final String BASE_MSOFFICE_WORD_2007_KEY_64 =
+      "\"HKEY_LOCAL_MACHINE\\Software\\Wow6432Node\\Microsoft\\Office\\12.0\\Word\\InstallRoot\" /ve";
+  static final String BASE_MSOFFICE_EXCEL_2007_KEY_64 =
+      "\"HKEY_LOCAL_MACHINE\\Software\\Wow6432Node\\Microsoft\\Office\\12.0\\Excel\\InstallRoot\" /ve";
+  static final String BASE_MSOFFICE_POWERPOINT_2007_KEY_64 =
+      "\"HKEY_LOCAL_MACHINE\\Software\\Wow6432Node\\Microsoft\\Office\\12.0\\PowerPoint\\InstallRoot\" /ve";
 
   protected String getClsid(String type) {
     return RegistryKeyReader.readKey(BASE_APPLICATION_KEY + type + "\\CLSID\"");
@@ -70,7 +74,11 @@ public class MsOfficeRegistryHelper implements OfficeFinder {
     String clsid = getClsid(type);
     if (clsid != null) {
       String path = RegistryKeyReader.readKey(BASE_KEY_CLSID + clsid
-              + "\\LocalServer32\"");
+          + "\\LocalServer32\"");
+      if (path == null) {
+        path = RegistryKeyReader.readKey(BASE_KEY_64_CLSID + clsid
+            + "\\LocalServer32\"");
+      }
       if (path != null) {
         return '"' + extractPath(path) + '"';
       }
@@ -123,11 +131,23 @@ public class MsOfficeRegistryHelper implements OfficeFinder {
 
   @Override
   public boolean isMicrosoftOffice2007() {
-    logger.log(Level.INFO, "Are we using Word 2007 : {0}", RegistryKeyReader.readKey(BASE_MSOFFICE_WORD_2007_KEY) != null);
-    logger.log(Level.INFO, "Are we using Excel 2007 : {0}", RegistryKeyReader.readKey(BASE_MSOFFICE_EXCEL_2007_KEY) != null);
-    logger.log(Level.INFO, "Are we using Powerpoint 2007 : {0}", RegistryKeyReader.readKey(BASE_MSOFFICE_POWERPOINT_2007_KEY) != null);
+    logger.log(Level.INFO, "Are we using Word 2007 : {0}", RegistryKeyReader
+        .readKey(BASE_MSOFFICE_WORD_2007_KEY) != null
+        ||
+        RegistryKeyReader.readKey(BASE_MSOFFICE_WORD_2007_KEY_64) != null);
+    logger.log(Level.INFO, "Are we using Excel 2007 : {0}", RegistryKeyReader
+        .readKey(BASE_MSOFFICE_EXCEL_2007_KEY) != null
+        ||
+        RegistryKeyReader.readKey(BASE_MSOFFICE_EXCEL_2007_KEY_64) != null);
+    logger.log(Level.INFO, "Are we using Powerpoint 2007 : {0}", RegistryKeyReader
+        .readKey(BASE_MSOFFICE_POWERPOINT_2007_KEY) != null
+        ||
+        RegistryKeyReader.readKey(BASE_MSOFFICE_POWERPOINT_2007_KEY_64) != null);
     return (RegistryKeyReader.readKey(BASE_MSOFFICE_WORD_2007_KEY) != null
-            || RegistryKeyReader.readKey(BASE_MSOFFICE_EXCEL_2007_KEY) != null
-            || RegistryKeyReader.readKey(BASE_MSOFFICE_POWERPOINT_2007_KEY) != null);
+        || RegistryKeyReader.readKey(BASE_MSOFFICE_EXCEL_2007_KEY) != null
+        || RegistryKeyReader.readKey(BASE_MSOFFICE_POWERPOINT_2007_KEY) != null
+        || RegistryKeyReader.readKey(BASE_MSOFFICE_WORD_2007_KEY_64) != null
+        || RegistryKeyReader.readKey(BASE_MSOFFICE_EXCEL_2007_KEY_64) != null || RegistryKeyReader
+        .readKey(BASE_MSOFFICE_POWERPOINT_2007_KEY_64) != null);
   }
 }
