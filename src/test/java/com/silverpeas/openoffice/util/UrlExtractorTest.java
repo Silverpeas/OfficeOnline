@@ -21,11 +21,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.silverpeas.openoffice.util;
 
 import junit.framework.TestCase;
@@ -36,6 +31,7 @@ import junit.framework.TestCase;
  */
 public class UrlExtractorTest extends TestCase {
 
+  private static final String REAL_OS = System.getProperty("os.name");
   public UrlExtractorTest(String testName) {
     super(testName);
   }
@@ -48,6 +44,7 @@ public class UrlExtractorTest extends TestCase {
   @Override
   protected void tearDown() throws Exception {
     super.tearDown();
+    System.setProperty("os.name", REAL_OS);
   }
 
   /**

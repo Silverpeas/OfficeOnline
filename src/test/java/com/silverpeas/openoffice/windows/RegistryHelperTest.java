@@ -24,7 +24,6 @@
 
 package com.silverpeas.openoffice.windows;
 
-import com.silverpeas.openoffice.util.OsEnum;
 import com.silverpeas.openoffice.util.RegistryKeyReader;
 import junit.framework.TestCase;
 
@@ -52,7 +51,7 @@ public class RegistryHelperTest extends TestCase {
   }
 
   public void testReadKey() throws Exception {
-    if (OsEnum.getOS() != OsEnum.LINUX && OsEnum.getOS() != OsEnum.MAC_OSX) {
+    if (!System.getProperty("os.name").startsWith("Windows")) {
       return;
     }
     String clockFormat = RegistryKeyReader.readKey(

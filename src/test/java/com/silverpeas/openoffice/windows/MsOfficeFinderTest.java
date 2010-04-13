@@ -51,18 +51,27 @@ public class MsOfficeFinderTest extends TestCase {
   }
 
   public void testFindExcel() throws Exception {
+    if (!System.getProperty("os.name").startsWith("Windows")) {
+      return;
+    }
     String path = helper.findSpreadsheet();
     assertNotNull(path);
     assertEquals("\"" + INSTALLED_OFFICE_PATH + "EXCEL.EXE\"", path);
   }
 
   public void testFindPowerpoint() throws Exception {
+    if (!System.getProperty("os.name").startsWith("Windows")) {
+      return;
+    }
     String path = helper.findPresentation();
     assertNotNull(path);
     assertEquals("\"" + INSTALLED_OFFICE_PATH + "POWERPNT.EXE\"", path);
   }
 
   public void testFindWord() throws Exception {
+    if (!System.getProperty("os.name").startsWith("Windows")) {
+      return;
+    }
     String path = helper.findWordEditor();
     assertNotNull(path);
     assertEquals("\"" + INSTALLED_OFFICE_PATH + "WINWORD.EXE\" /m", path);
@@ -80,6 +89,9 @@ public class MsOfficeFinderTest extends TestCase {
   }
 
   public void testIsMicrosoftOffice2007() throws Exception {
+    if (!System.getProperty("os.name").startsWith("Windows")) {
+      return;
+    }
     assertTrue(helper.isMicrosoftOffice2007());
   }
 }
