@@ -8,15 +8,15 @@
   </parent>
 
   <scm>
-    <connection>scm:svn:https://www.silverpeas.org/svn/silverpeas/services/office-online/tags/office-online-5.0</connection>
-    <developerConnection>scm:svn:https://www.silverpeas.org/svn/silverpeas/services/office-online/tags/office-online-5.0</developerConnection>
-    <url>https://www.silverpeas.org/svn/silverpeas/services/office-online/tags/office-online-5.0</url>
+    <connection>scm:svn:https://www.silverpeas.org/svn/silverpeas/services/office-online/trunk</connection>
+    <developerConnection>scm:svn:https://www.silverpeas.org/svn/silverpeas/services/office-online/trunk</developerConnection>
+    <url>https://www.silverpeas.org/svn/silverpeas/services/office-online/trunk</url>
   </scm>
 
   <groupId>com.silverpeas.services</groupId>
   <artifactId>office-online</artifactId>
   <packaging>jar</packaging>
-  <version>5.0</version>
+  <version>5.1-SNAPSHOT</version>
   <name>Online Office Editor</name>
   <build>
     <finalName>OpenOfficeLauncher</finalName>
