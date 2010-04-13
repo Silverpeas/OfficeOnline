@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>com.silverpeas</groupId>
@@ -9,15 +8,15 @@
   </parent>
 
   <scm>
-    <connection>scm:svn:https://www.silverpeas.org/svn/silverpeas/services/office-online/trunk</connection>
-    <developerConnection>scm:svn:https://www.silverpeas.org/svn/silverpeas/services/office-online/trunk</developerConnection>
-    <url>https://www.silverpeas.org/svn/silverpeas/services/office-online/trunk</url>
+    <connection>scm:svn:https://www.silverpeas.org/svn/silverpeas/services/office-online/tags/office-online-5.0</connection>
+    <developerConnection>scm:svn:https://www.silverpeas.org/svn/silverpeas/services/office-online/tags/office-online-5.0</developerConnection>
+    <url>https://www.silverpeas.org/svn/silverpeas/services/office-online/tags/office-online-5.0</url>
   </scm>
 
   <groupId>com.silverpeas.services</groupId>
   <artifactId>office-online</artifactId>
   <packaging>jar</packaging>
-  <version>1.0-SNAPSHOT</version>
+  <version>5.0</version>
   <name>Online Office Editor</name>
   <build>
     <finalName>OpenOfficeLauncher</finalName>
