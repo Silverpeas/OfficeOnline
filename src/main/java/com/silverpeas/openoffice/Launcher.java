@@ -64,7 +64,7 @@ public class Launcher {
       logger.log(Level.INFO, "{0}{1}", new Object[] { MessageUtil.getMessage("info.url.decoded"),
           url });
       if (args[1] != null && !"".equals(args[1].trim())) {
-        logger.log(Level.INFO, "{0} {2}", new Object[] {
+        logger.log(Level.INFO, "{0} {1}", new Object[] {
             MessageUtil.getMessage("info.default.path"), UrlExtractor.decodePath(args[1]) });
         MsOfficePathFinder.basePath = UrlExtractor.decodePath(args[1]);
       }

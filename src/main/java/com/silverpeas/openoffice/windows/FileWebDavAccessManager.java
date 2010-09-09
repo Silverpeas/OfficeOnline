@@ -45,8 +45,7 @@ public class FileWebDavAccessManager {
   private String userName;
   private String password;
   private String lockToken = null;
-  static Logger logger = Logger.getLogger(
-      FileWebDavAccessManager.class.getName());
+  static Logger logger = Logger.getLogger(FileWebDavAccessManager.class.getName());
 
   /**
    * The AccessManager is inited with authentication info to avoid login prompt
@@ -69,11 +68,11 @@ public class FileWebDavAccessManager {
     WebdavManager webdav = new WebdavManager(uri.getHost(), userName, password);
     // Let's lock the file
     lockToken = webdav.lockFile(uri, userName);
-    logger.log(Level.INFO, MessageUtil.getMessage("info.webdav.locked") + ' '
-        + lockToken);
+    logger.log(Level.INFO, "{0}{1}{2}", new Object[]{MessageUtil.getMessage("info.webdav.locked"),
+          ' ', lockToken});
     String tmpFile = webdav.getFile(uri, lockToken);
-    logger.log(Level.INFO, MessageUtil.getMessage("info.webdav.file.locally.saved") + ' '
-        + tmpFile);
+    logger.log(Level.INFO, "{0}{1}{2}", new Object[]{MessageUtil.getMessage(
+          "info.webdav.file.locally.saved"), ' ', tmpFile});
     return tmpFile;
   }
 
@@ -88,11 +87,9 @@ public class FileWebDavAccessManager {
       IOException {
     URI uri = getURI(url);
     WebdavManager webdav = new WebdavManager(uri.getHost(), userName, password);
-    logger.log(Level.INFO, MessageUtil.getMessage("info.webdav.put")
-        + ' ' + tmpFilePath);
+    logger.log(Level.INFO, "{0}{1}{2}", new Object[]{MessageUtil.getMessage("info.webdav.put"), ' ', tmpFilePath});
     webdav.putFile(uri, tmpFilePath, lockToken);
-    logger.log(Level.INFO, MessageUtil.getMessage("info.webdav.unlocking")
-        + ' ' + uri.getEscapedURI());
+    logger.log(Level.INFO, "{0}{1}{2}", new Object[]{MessageUtil.getMessage("info.webdav.unlocking"), ' ', uri.getEscapedURI()});
     // Let's unlock the file
     webdav.unlockFile(uri, lockToken);
     // delete temp file

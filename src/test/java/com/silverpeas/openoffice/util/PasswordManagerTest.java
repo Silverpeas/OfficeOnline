@@ -21,12 +21,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.silverpeas.openoffice.util;
 
 import com.silverpeas.openoffice.AuthenticationInfo;
@@ -37,7 +31,7 @@ import junit.framework.TestCase;
  * @author ehugonnet
  */
 public class PasswordManagerTest extends TestCase {
-    
+
     public PasswordManagerTest(String testName) {
         super(testName);
     }
@@ -84,12 +78,16 @@ public class PasswordManagerTest extends TestCase {
    * Test of extractAuthenticationInfo method, of class PasswordManager.
    */
   public void testExtractAuthenticationInfo() {
-    System.out.println("extractAuthenticationInfo");
     String login = "bart";
     String encodedPassword = "5f6b7130460e9b316ca968ec952d3fa3";
     AuthenticationInfo expResult = new AuthenticationInfo("bart", "helloworld");
-    AuthenticationInfo result =
-        PasswordManager.extractAuthenticationInfo(login, encodedPassword);
+    AuthenticationInfo result = PasswordManager.extractAuthenticationInfo(login, encodedPassword);
+    assertEquals(expResult, result);
+
+    login = "homer%40simpson.com";
+    encodedPassword = "046e010f9c0cfaa5";
+    expResult = new AuthenticationInfo("homer@simpson.com", "homer");
+    result = PasswordManager.extractAuthenticationInfo(login, encodedPassword);
     assertEquals(expResult, result);
   }
 

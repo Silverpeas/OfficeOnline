@@ -32,6 +32,7 @@ import com.silverpeas.openoffice.AuthenticationInfo;
 import com.silverpeas.openoffice.Launcher;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
+import java.net.URLDecoder;
 import java.security.GeneralSecurityException;
 import java.security.Key;
 import java.util.logging.Level;
@@ -59,8 +60,7 @@ public class PasswordManager {
     Cipher cipher = Cipher.getInstance("DES");
     cipher.init(Cipher.DECRYPT_MODE, decryptionKey);
     byte[] bytes = new BigInteger(encodedPassword, 16).toByteArray();
-    Logger.getLogger(Launcher.class.getName()).log(Level.INFO,
-        "decrypted password byte array length : " + bytes.length);
+    Logger.getLogger(Launcher.class.getName()).log(Level.INFO, "decrypted password byte array length : {0}", bytes.length);
     int nbCaracToRemove = (bytes.length) % 8;
     byte[] result = new byte[bytes.length - nbCaracToRemove];
     System.arraycopy(bytes, nbCaracToRemove, result, 0, bytes.length -
@@ -78,7 +78,7 @@ public class PasswordManager {
     Cipher cipher = Cipher.getInstance("DES");
     cipher.init(Cipher.ENCRYPT_MODE, decryptionKey);
     byte[] cipherText = cipher.doFinal(password.getBytes("UTF-8"));
-    StringBuffer buf = new StringBuffer();
+    StringBuilder buf = new StringBuilder();
     for (int i = 0; i != cipherText.length; i++) {
       int v = cipherText[i] & 0xff;
       buf.append(DIGITS.charAt(v >> 4));
@@ -92,16 +92,17 @@ public class PasswordManager {
    * @param args arguments passed through JNLP
    * @return the Authentication object
    */
-  public static AuthenticationInfo extractAuthenticationInfo(String login,
-      String encodedPassword) {
+  public static AuthenticationInfo extractAuthenticationInfo(String login, String encodedPassword) {
     String clearPwd = null;
+    String decodedLogin = login;
     try {
       clearPwd = decodePassword(encodedPassword);
+      decodedLogin = URLDecoder.decode(login, "UTF-8");
     } catch (Exception e) {
-      Logger.getLogger(Launcher.class.getName()).log(Level.SEVERE,
-          "can't retrieve credentials", e);
+      Logger.getLogger(Launcher.class.getName()).log(Level.SEVERE, "can't retrieve credentials", e);
       System.exit(-1);
     }
-    return new AuthenticationInfo(login, clearPwd);
+
+    return new AuthenticationInfo(decodedLogin, clearPwd);
   }
 }

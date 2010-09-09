@@ -84,7 +84,7 @@ public class WebdavManager {
     connectionParams.setMaxConnectionsPerHost(hostConfig, maxHostConnections);
     connectionManager.setParams(connectionParams);
     HttpClientParams clientParams = new HttpClientParams();
-    clientParams.setParameter(HttpClientParams.CREDENTIAL_CHARSET, "ISO-8859-1");
+    clientParams.setParameter(HttpClientParams.CREDENTIAL_CHARSET, "UTF-8");
     clientParams.setParameter(HttpClientParams.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
     client = new HttpClient(clientParams, connectionManager);
     Credentials creds = new UsernamePasswordCredentials(login, password);
