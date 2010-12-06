@@ -51,11 +51,10 @@ public class OfficeLauncher {
   public static int launch(MsOfficeType type, String url, AuthenticationInfo authInfo)
       throws IOException, InterruptedException, OfficeNotFoundException {
     OfficeFinder finder = FinderFactory.getFinder(type);
-    logger.log(Level.INFO, "Are we using Office 2007 : {0}", finder.isMicrosoftOffice2007());
+    logger.log(Level.INFO, "Are we using Office 2007 : {0}", finder.isMicrosoftOffice());
     logger.log(Level.INFO, "We are on {0} OS", OsEnum.getOS());
-    boolean modeDisconnected = (OsEnum.getOS() == OsEnum.WINDOWS_VISTA ||
-        OsEnum.getOS() == OsEnum.WINDOWS_SEVEN || OsEnum.getOS() == OsEnum.MAC_OSX)
-        && finder.isMicrosoftOffice2007();
+    boolean modeDisconnected = (OsEnum.isWindows() || OsEnum.getOS() == OsEnum.MAC_OSX)
+        && finder.isMicrosoftOffice();
     switch (type) {
       case EXCEL:
         return launch(finder.findSpreadsheet(), url, modeDisconnected, authInfo);

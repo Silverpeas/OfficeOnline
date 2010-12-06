@@ -40,7 +40,7 @@ import java.util.logging.Logger;
  */
 public class MacOsOfficeFinder implements OfficeFinder {
 
-  static Logger logger = Logger.getLogger(MacOsOfficeFinder.class.getName());
+  static final Logger logger = Logger.getLogger(MacOsOfficeFinder.class.getName());
 
   protected static final OpenOfficeFinder finder = new WhereisMacHelper();
   protected static final String OFFICE_PATH =
@@ -82,13 +82,13 @@ public class MacOsOfficeFinder implements OfficeFinder {
   }
 
   @Override
-  public boolean isMicrosoftOffice2007() {
+  public boolean isMicrosoftOffice() {
     return isMsOfficePresent();
   }
 
   protected boolean isMsOfficePresent() {
     File officeDir = new File(OFFICE_PATH);
-    logger.log(Level.INFO, "Looking for file " + OFFICE_PATH + " but found " + officeDir.exists());
+    logger.log(Level.INFO, "Looking for file " + OFFICE_PATH + " but found {0}", officeDir.exists());
     return officeDir.exists();
   }
 

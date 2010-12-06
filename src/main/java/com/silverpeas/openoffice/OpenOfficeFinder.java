@@ -54,7 +54,7 @@ public abstract class OpenOfficeFinder implements OfficeFinder {
   }
 
   @Override
-  public boolean isMicrosoftOffice2007() {
+  public boolean isMicrosoftOffice() {
     return false;
   }
 

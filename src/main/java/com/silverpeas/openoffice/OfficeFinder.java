@@ -41,5 +41,5 @@ public interface OfficeFinder {
 
   public String findOther() throws OfficeNotFoundException;
 
-  public boolean isMicrosoftOffice2007();
+  public boolean isMicrosoftOffice();
 }

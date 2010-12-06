@@ -85,8 +85,8 @@ public class MsOfficePathFinder implements OfficeFinder {
   }
 
   @Override
-  public boolean isMicrosoftOffice2007() {
-    return false;
+  public boolean isMicrosoftOffice() {
+    return !isOpenOffice;
   }
 
   protected boolean exists(String exe) {

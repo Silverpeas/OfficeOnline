@@ -67,4 +67,14 @@ public enum OsEnum {
   public String getProfilesDirectory() {
     return System.getProperty("user.home") + File.separator + profilesDir;
   }
+  
+  
+  public static boolean isWindows() {
+    OsEnum currentOS = getOS();
+    return currentOS == WINDOWS_SEVEN || currentOS == WINDOWS_XP || currentOS == WINDOWS_VISTA;
+  }
+  
+  public static boolean isLinux() {
+    return getOS() == LINUX;
+  }
 }

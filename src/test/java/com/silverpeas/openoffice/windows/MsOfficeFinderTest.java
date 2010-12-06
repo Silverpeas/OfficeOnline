@@ -92,6 +92,6 @@ public class MsOfficeFinderTest extends TestCase {
     if (!System.getProperty("os.name").startsWith("Windows")) {
       return;
     }
-    assertTrue(helper.isMicrosoftOffice2007());
+    assertTrue(helper.isMicrosoftOffice());
   }
 }
