@@ -4,13 +4,12 @@
   <parent>
     <groupId>com.silverpeas</groupId>
     <artifactId>parent</artifactId>
-    <version>16-SNAPSHOT</version>
+    <version>19-SNAPSHOT</version>
   </parent>
-
   <scm>
-    <connection>scm:svn:https://www.silverpeas.org/svn/silverpeas/services/office-online/trunk</connection>
-    <developerConnection>scm:svn:https://www.silverpeas.org/svn/silverpeas/services/office-online/trunk</developerConnection>
-    <url>https://www.silverpeas.org/svn/silverpeas/services/office-online/trunk</url>
+    <connection>scm:git:git@github.com:Silverpeas/OfficeOnline.git</connection>
+    <developerConnection>scm:git:git@github.com:Silverpeas/OfficeOnline.git</developerConnection>
+    <url>https://github.com/Silverpeas/OfficeOnline</url>
   </scm>
 
   <groupId>com.silverpeas.services</groupId>
@@ -95,7 +94,14 @@
                 </goals>
                 <configuration>
                   <archiveDirectory>${project.build.directory}/dependency</archiveDirectory>
+                  <removeExistingSignatures>true</removeExistingSignatures>	
                 </configuration>
+              </execution>
+              <execution>
+                <id>verify</id>
+                <goals>
+                  <goal>verify</goal>
+                </goals>
               </execution>
             </executions>
             <configuration>
