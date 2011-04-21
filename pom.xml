@@ -24,7 +24,7 @@
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
+      <artifactId>junit-dep</artifactId>
     </dependency>
     <dependency>
       <groupId>commons-codec</groupId>
@@ -102,6 +102,9 @@
                 <goals>
                   <goal>verify</goal>
                 </goals>
+                <configuration>
+                  <archiveDirectory>${project.build.directory}/dependency</archiveDirectory>
+                </configuration>
               </execution>
             </executions>
             <configuration>
