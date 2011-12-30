@@ -4,7 +4,7 @@
   <parent>
     <groupId>com.silverpeas</groupId>
     <artifactId>parent</artifactId>
-    <version>19</version>
+    <version>22-SNAPSHOT</version>
   </parent>
   <scm>
     <connection>scm:git:git@github.com:Silverpeas/OfficeOnline.git</connection>
@@ -16,7 +16,7 @@
   <artifactId>office-online</artifactId>
   <packaging>jar</packaging>
   <version>5.3-SNAPSHOT</version>
-  <name>Online Office Editor</name>
+  <name>Online Office Editor - ${project.version}</name>
   <build>
     <finalName>OpenOfficeLauncher</finalName>
   </build>
@@ -75,6 +75,12 @@
     <dependency>
       <groupId>xerces</groupId>
       <artifactId>xercesImpl</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <scope>runtime</scope>
     </dependency>
   </dependencies>
   <profiles>
