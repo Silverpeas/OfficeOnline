@@ -1,27 +1,23 @@
 /**
  * Copyright (C) 2000 - 2009 Silverpeas
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Affero General Public License as published by the Free Software Foundation, either version 3
+ * of the License, or (at your option) any later version.
  *
- * As a special exception to the terms and conditions of version 3.0 of
- * the GPL, you may redistribute this Program in connection with Free/Libre
- * Open Source Software ("FLOSS") applications as described in Silverpeas's
- * FLOSS exception.  You should have received a copy of the text describing
- * the FLOSS exception, and it is also available here:
+ * As a special exception to the terms and conditions of version 3.0 of the GPL, you may
+ * redistribute this Program in connection with Free/Libre Open Source Software ("FLOSS")
+ * applications as described in Silverpeas's FLOSS exception. You should have received a copy of the
+ * text describing the FLOSS exception, and it is also available here:
  * "http://repository.silverpeas.com/legal/licensing"
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Affero General Public License for more details.
  *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
-
 package com.silverpeas.openoffice.windows.webdav;
 
 import java.io.IOException;
@@ -59,8 +55,12 @@ import org.apache.jackrabbit.webdav.DavException;
 import org.apache.jackrabbit.webdav.client.methods.PutMethod;
 import org.apache.jackrabbit.webdav.client.methods.UnLockMethod;
 
+import static java.net.HttpURLConnection.HTTP_OK;
+import static java.net.HttpURLConnection.HTTP_CREATED;
+
 /**
  * Simple class to help manipulate Webdav ressources.
+ *
  * @author ehugonnet
  */
 public class WebdavManager {
@@ -70,6 +70,7 @@ public class WebdavManager {
 
   /**
    * Prepare HTTP connections to the WebDav server
+   *
    * @param host the webdav server host name.
    * @param login the login for the user on the webdav server.
    * @param password the login for the user on the webdav server.
@@ -77,8 +78,7 @@ public class WebdavManager {
   public WebdavManager(String host, String login, String password) {
     HostConfiguration hostConfig = new HostConfiguration();
     hostConfig.setHost(host);
-    HttpConnectionManager connectionManager =
-        new MultiThreadedHttpConnectionManager();
+    HttpConnectionManager connectionManager = new MultiThreadedHttpConnectionManager();
     HttpConnectionManagerParams connectionParams = new HttpConnectionManagerParams();
     int maxHostConnections = 20;
     connectionParams.setMaxConnectionsPerHost(hostConfig, maxHostConnections);
@@ -94,14 +94,15 @@ public class WebdavManager {
 
   /**
    * Lock a ressource on a webdav server.
+   *
    * @param uri the URI to the ressource to be locked.
    * @param login the user locking the ressource.
    * @return the lock token.
    * @throws IOException
    */
   public String lockFile(URI uri, String login) throws IOException {
-    logger.log(Level.INFO, MessageUtil.getMessage("info.webdav.locking")
-        + ' ' + uri.getEscapedURI());
+    logger.log(Level.INFO, "{0} {1}", new Object[]{MessageUtil.getMessage("info.webdav.locking"),
+          uri.getEscapedURI()});
     // Let's lock the file
     LockMethod lockMethod = new LockMethod(uri.getEscapedURI(),
         Scope.EXCLUSIVE, Type.WRITE, login, 600000l, false);
@@ -113,13 +114,13 @@ public class WebdavManager {
         throw new IOException(MessageUtil.getMessage("error.webdav.already.locked"));
       }
       throw new IOException(MessageUtil.getMessage("error.webdav.locking")
-          + ' ' + lockMethod.getStatusCode() + " - "
-          + lockMethod.getStatusText());
+          + ' ' + lockMethod.getStatusCode() + " - " + lockMethod.getStatusText());
     }
   }
 
   /**
    * Unlock a ressource on a webdav server.
+   *
    * @param uri the URI to the ressource to be unlocked.
    * @param lockToken the current lock token.
    * @throws IOException
@@ -131,8 +132,9 @@ public class WebdavManager {
     UnLockMethod unlockMethod = new UnLockMethod(uri.getEscapedURI(), lockToken);
     client.executeMethod(unlockMethod);
     if (unlockMethod.getStatusCode() != 200 && unlockMethod.getStatusCode() != 204) {
-      logger.log(Level.INFO, MessageUtil.getMessage("error.webdav.unlocking") + ' '
-          + unlockMethod.getStatusCode());
+      logger.log(Level.INFO, "{0} {1}", new Object[]{MessageUtil.
+            getMessage("error.webdav.unlocking"),
+            unlockMethod.getStatusCode()});
     }
     try {
       unlockMethod.checkSuccess();
@@ -140,13 +142,13 @@ public class WebdavManager {
     } catch (DavException ex) {
       logger.log(Level.SEVERE,
           MessageUtil.getMessage("error.webdav.unlocking"), ex);
-      throw new IOException(MessageUtil.getMessage("error.webdav.unlocking"),
-          ex);
+      throw new IOException(MessageUtil.getMessage("error.webdav.unlocking"), ex);
     }
   }
 
   /**
    * Get the ressource from the webdav server.
+   *
    * @param uri the uri to the ressource.
    * @param lockToken the current lock token.
    * @return the path to the saved file on the filesystem.
@@ -178,8 +180,8 @@ public class WebdavManager {
         fos.write(data, 0, c);
       }
     } catch (InterruptedIOException ioinex) {
-      logger.log(Level.INFO, MessageUtil.getMessage("info.user.cancel") + ' '
-          + ioinex.getMessage());
+      logger.log(Level.INFO, "{0} {1}", new Object[]{MessageUtil.getMessage("info.user.cancel"),
+            ioinex.getMessage()});
       unlockFile(uri, lockToken);
       System.exit(0);
     } finally {
@@ -190,6 +192,7 @@ public class WebdavManager {
 
   /**
    * Update a ressource on the webdav file server.
+   *
    * @param uri the uri to the ressource.
    * @param localFilePath the path to the file to be uploaded on the filesystem.
    * @param lockToken the current lock token.
@@ -204,12 +207,13 @@ public class WebdavManager {
       throw new IOException(MessageUtil.getMessage("error.remote.file"));
     }
     PutMethod putMethod = new PutMethod(uri.getEscapedURI());
-    logger.log(Level.INFO, MessageUtil.getMessage("info.webdav.put") + ' ' + localFilePath);
+    logger.log(Level.INFO, "{0} {1}", new Object[]{MessageUtil.getMessage("info.webdav.put"),
+          localFilePath});
     File file = new File(localFilePath);
     UploadProgressBar progress = new UploadProgressBar();
     progress.setMaximum(new Long(file.length()).intValue());
-    progress.setMessage(MessageUtil.getMessage("uploading.remote.file") + ' ' +
-        uri.getPath().substring(
+    progress.setMessage(MessageUtil.getMessage("uploading.remote.file") + ' ' + uri.getPath().
+        substring(
         uri.getPath().lastIndexOf('/') + 1));
     MonitoredInputStream is =
         new MonitoredInputStream(new BufferedInputStream(new FileInputStream(file)));
@@ -238,7 +242,7 @@ public class WebdavManager {
     GetMethod method = new GetMethod();
     method.setURI(uri);
     client.executeMethod(method);
-    if (method.getStatusCode() != 200) {
+    if (method.getStatusCode() != HTTP_CREATED && method.getStatusCode() != HTTP_OK) {
       throw new IOException(MessageUtil.getMessage("error.get.remote.file")
           + ' ' + method.getStatusCode() + " - " + method.getStatusText());
     }
