@@ -41,4 +41,9 @@ public class MessageDisplayer {
     JOptionPane.showMessageDialog(null, t.getMessage(),
         MessageUtil.getMessage("error.title"), JOptionPane.ERROR_MESSAGE);
   }
+  
+  public static String displayPromptPassword() {
+    return JOptionPane.showInputDialog(null, MessageUtil.getMessage("info.missing.password.label"),
+        MessageUtil.getMessage("info.missing.password.title"), JOptionPane.PLAIN_MESSAGE);
+  }
 }

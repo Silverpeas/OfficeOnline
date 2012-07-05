@@ -1,25 +1,22 @@
 /**
  * Copyright (C) 2000 - 2009 Silverpeas
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Affero General Public License as published by the Free Software Foundation, either version 3
+ * of the License, or (at your option) any later version.
  *
- * As a special exception to the terms and conditions of version 3.0 of
- * the GPL, you may redistribute this Program in connection with Free/Libre
- * Open Source Software ("FLOSS") applications as described in Silverpeas's
- * FLOSS exception.  You should have received a copy of the text describing
- * the FLOSS exception, and it is also available here:
+ * As a special exception to the terms and conditions of version 3.0 of the GPL, you may
+ * redistribute this Program in connection with Free/Libre Open Source Software ("FLOSS")
+ * applications as described in Silverpeas's FLOSS exception. You should have received a copy of the
+ * text describing the FLOSS exception, and it is also available here:
  * "http://repository.silverpeas.com/legal/licensing"
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Affero General Public License for more details.
  *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 
 /*
@@ -41,20 +38,29 @@ import java.util.logging.Logger;
 public class MacOsOfficeFinder implements OfficeFinder {
 
   static final Logger logger = Logger.getLogger(MacOsOfficeFinder.class.getName());
-
   protected static final OpenOfficeFinder finder = new WhereisMacHelper();
-  protected static final String OFFICE_PATH =
-      "/Applications/Microsoft Office 2008/";
-  protected static final String EXCEL_CMD = "open -a \"" + OFFICE_PATH +
-      "Microsoft Excel.app/Contents/MacOS/Microsoft Excel\"";
-  protected static final String WORD_CMD = "open -a \"" + OFFICE_PATH +
-      "Microsoft Word.app/Contents/MacOS/Microsoft Word\"";
-  protected static final String POWERPOINT_CMD = "open -a \"" + OFFICE_PATH +
-      "Microsoft PowerPoint.app/Contents/MacOS/Microsoft PowerPoint\"";
+  protected static final String OFFICE_2008_PATH =
+          "/Applications/Microsoft Office 2008/";
+  protected static final String OFFICE_2011_PATH = "/Applications/Microsoft Office 2011/";
+  protected static final String OFFICE_PATH;
+  static {
+    File officeDir = new File(OFFICE_2011_PATH);
+    if (!officeDir.exists()) {
+      OFFICE_PATH = OFFICE_2008_PATH;
+    } else {
+      OFFICE_PATH = OFFICE_2011_PATH;
+    }
+  }
+  protected static final String EXCEL_CMD = "open -a \"" + OFFICE_PATH
+          + "Microsoft Excel.app/Contents/MacOS/Microsoft Excel\"";
+  protected static final String WORD_CMD = "open -a \"" + OFFICE_PATH
+          + "Microsoft Word.app/Contents/MacOS/Microsoft Word\"";
+  protected static final String POWERPOINT_CMD = "open -a \"" + OFFICE_PATH
+          + "Microsoft PowerPoint.app/Contents/MacOS/Microsoft PowerPoint\"";
 
   @Override
   public String findSpreadsheet() throws OfficeNotFoundException {
-    if (isMsOfficePresent()) {
+    if (isMicrosoftOffice()) {
       return EXCEL_CMD;
     }
     return finder.findSpreadsheet();
@@ -62,7 +68,7 @@ public class MacOsOfficeFinder implements OfficeFinder {
 
   @Override
   public String findPresentation() throws OfficeNotFoundException {
-    if (isMsOfficePresent()) {
+    if (isMicrosoftOffice()) {
       return POWERPOINT_CMD;
     }
     return finder.findPresentation();
@@ -70,7 +76,7 @@ public class MacOsOfficeFinder implements OfficeFinder {
 
   @Override
   public String findWordEditor() throws OfficeNotFoundException {
-    if (isMsOfficePresent()) {
+    if (isMicrosoftOffice()) {
       return WORD_CMD;
     }
     return finder.findWordEditor();
@@ -87,9 +93,12 @@ public class MacOsOfficeFinder implements OfficeFinder {
   }
 
   protected boolean isMsOfficePresent() {
-    File officeDir = new File(OFFICE_PATH);
-    logger.log(Level.INFO, "Looking for file " + OFFICE_PATH + " but found {0}", officeDir.exists());
+    File officeDir = new File(OFFICE_2011_PATH);
+    logger.log(Level.INFO, "Looking for file " + OFFICE_2011_PATH + " but found {0}", officeDir.
+            exists());
+    if (!officeDir.exists()) {
+      officeDir = new File(OFFICE_2008_PATH);
+    }
     return officeDir.exists();
   }
-
 }

@@ -58,7 +58,13 @@ public class PasswordManagerTest extends TestCase {
     expResult = "héhèhàhh";
     result = PasswordManager.decodePassword(encodedPassword);
     assertEquals(expResult, result);
+    encodedPassword = "c77d90f5ce1e68a2";
+    expResult = "";
+    result = PasswordManager.decodePassword(encodedPassword);
+    assertEquals(expResult, result);
   }
+  
+  
 
   /**
    * Test of encodePassword method, of class PasswordManager.

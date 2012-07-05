@@ -11,7 +11,7 @@
  * Open Source Software ("FLOSS") applications as described in Silverpeas's
  * FLOSS exception.  You should have received a copy of the text describing
  * the FLOSS exception, and it is also available here:
- * "http://repository.silverpeas.com/legal/licensing"
+ * "http://www.silverpeas.com/legal/licensing"
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -22,10 +22,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.silverpeas.openoffice.util;
 
 import com.silverpeas.openoffice.AuthenticationInfo;
@@ -97,6 +93,9 @@ public class PasswordManager {
     String decodedLogin = login;
     try {
       clearPwd = decodePassword(encodedPassword);
+      if(clearPwd.isEmpty()) {
+        clearPwd = promptForpassword();
+      }
       decodedLogin = URLDecoder.decode(login, "UTF-8");
     } catch (Exception e) {
       Logger.getLogger(Launcher.class.getName()).log(Level.SEVERE, "can't retrieve credentials", e);
@@ -104,5 +103,9 @@ public class PasswordManager {
     }
 
     return new AuthenticationInfo(decodedLogin, clearPwd);
+  }
+
+  private static String promptForpassword() {
+    throw new UnsupportedOperationException("Not yet implemented");
   }
 }

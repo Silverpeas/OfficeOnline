@@ -54,7 +54,7 @@ public class WhereisHelperTest extends TestCase {
   public void testWhereis() {
     WhereisHelper helper = getHelper();
     String result = helper.whereis();
-    assertEquals("soffice: /usr/bin/soffice", result);
+    assertEquals("soffice: /usr/bin/soffice /usr/bin/X11/soffice", result);
   }
 
   public void testFindOpenOffice()

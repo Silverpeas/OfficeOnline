@@ -66,6 +66,10 @@ public class WhereisHelper extends OpenOfficeFinder {
     if (result == null) {
       throw new OpenOfficeNotFoundException();
     }
-    return result.substring(result.indexOf(' ') + 1);
+    result = result.substring(result.indexOf(' ') + 1);
+    if(result.contains(" ")) {
+      result = result.substring(0,result.indexOf(' ') );
+    }
+    return result;
   }
 }
