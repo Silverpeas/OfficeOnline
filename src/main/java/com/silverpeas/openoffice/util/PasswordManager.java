@@ -24,8 +24,6 @@
 
 package com.silverpeas.openoffice.util;
 
-import com.silverpeas.openoffice.AuthenticationInfo;
-import com.silverpeas.openoffice.Launcher;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.net.URLDecoder;
@@ -33,8 +31,12 @@ import java.security.GeneralSecurityException;
 import java.security.Key;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
+
+import com.silverpeas.openoffice.AuthenticationInfo;
+import com.silverpeas.openoffice.Launcher;
 
 /**
  * @author ehugonnet
@@ -106,6 +108,6 @@ public class PasswordManager {
   }
 
   private static String promptForpassword() {
-    throw new UnsupportedOperationException("Not yet implemented");
+    return MessageDisplayer.displayPromptPassword();
   }
 }
