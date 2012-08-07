@@ -24,22 +24,24 @@
 
 package com.silverpeas.openoffice;
 
+import java.util.Arrays;
+
 /**
  * Authentication information.
  * @author Ludovic Bertin
  */
 public class AuthenticationInfo {
 
-  String login = null;
-  String password = null;
+  private String login = null;
+  private char[] password = new char[0];
 
   /**
    * @param login
-   * @param password
+   * @param pass
    */
-  public AuthenticationInfo(String login, String password) {
+  public AuthenticationInfo(String login, char[] pass) {
     this.login = login;
-    this.password = password;
+    this.password = Arrays.copyOf(pass, pass.length);
   }
 
   /**
@@ -59,22 +61,16 @@ public class AuthenticationInfo {
   /**
    * @return the password
    */
-  public String getPassword() {
-    return password;
+  public char[] getPassword() {
+    return Arrays.copyOf(password, password.length);
   }
 
-  /**
-   * @param password the password to set
-   */
-  public void setPassword(String password) {
-    this.password = password;
-  }
 
   @Override
   public int hashCode() {
-    int hash = 3;
+    int hash = 7;
     hash = 47 * hash + (this.login != null ? this.login.hashCode() : 0);
-    hash = 47 * hash + (this.password != null ? this.password.hashCode() : 0);
+    hash = 47 * hash + Arrays.hashCode(this.password);
     return hash;
   }
 
@@ -87,14 +83,14 @@ public class AuthenticationInfo {
       return false;
     }
     final AuthenticationInfo other = (AuthenticationInfo) obj;
-    if ((this.login == null) ? (other.login != null)
-        : !this.login.equals(other.login)) {
+    if ((this.login == null) ? (other.login != null) : !this.login.equals(other.login)) {
       return false;
     }
-    if ((this.password == null) ? (other.password != null)
-        : !this.password.equals(other.password)) {
+    if (!Arrays.equals(this.password, other.password)) {
       return false;
     }
     return true;
   }
+
+  
 }
