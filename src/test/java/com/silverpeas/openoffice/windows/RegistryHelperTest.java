@@ -1,27 +1,22 @@
 /**
  * Copyright (C) 2000 - 2009 Silverpeas
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public
+ * License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later
+ * version.
  *
- * As a special exception to the terms and conditions of version 3.0 of
- * the GPL, you may redistribute this Program in connection with Free/Libre
- * Open Source Software ("FLOSS") applications as described in Silverpeas's
- * FLOSS exception.  You should have received a copy of the text describing
- * the FLOSS exception, and it is also available here:
+ * As a special exception to the terms and conditions of version 3.0 of the GPL, you may redistribute this Program in
+ * connection with Free/Libre Open Source Software ("FLOSS") applications as described in Silverpeas's FLOSS exception. You
+ * should have received a copy of the text describing the FLOSS exception, and it is also available here:
  * "http://repository.silverpeas.com/legal/licensing"
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more
+ * details.
  *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Affero General Public License along with this program. If not, see
+ * <http://www.gnu.org/licenses/>.
  */
-
 package com.silverpeas.openoffice.windows;
 
 import com.silverpeas.openoffice.util.RegistryKeyReader;
@@ -55,7 +50,7 @@ public class RegistryHelperTest extends TestCase {
       return;
     }
     String clockFormat = RegistryKeyReader.readKey(
-            "\"HKEY_CURRENT_USER\\Software\\Microsoft\\Clock\" /v iFormat");
+            "\"HKEY_CURRENT_USER\\Control Panel\\International\" /v iTime");
     assertNotNull(clockFormat);
     assertEquals("1", clockFormat);
   }
@@ -83,6 +78,17 @@ public class RegistryHelperTest extends TestCase {
     WindowsOpenOfficeFinder helper = new WindowsOpenOfficeFinder();
     String openOffice = helper.findOpenOffice();
     assertNotNull(openOffice);
+    if(is64Bits()) {
     assertEquals("\"C:\\Program Files (x86)\\OpenOffice.org 3\\program\\soffice.exe\"", openOffice);
+    }else {
+      assertEquals("\"C:\\Program Files\\OpenOffice.org 3\\program\\soffice.exe\"", openOffice);
+    }
+  }
+
+  private boolean is64Bits() {
+    if (System.getProperty("os.name").contains("Windows")) {
+      return (System.getenv("ProgramFiles(x86)") != null);
+    }
+    return (System.getProperty("os.arch").indexOf("64") != -1);
   }
 }

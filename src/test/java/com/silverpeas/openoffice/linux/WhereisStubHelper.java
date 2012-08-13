@@ -31,6 +31,6 @@ package com.silverpeas.openoffice.linux;
 public class WhereisStubHelper extends WhereisHelper {
   @Override
  public String whereis() {
-   return "soffice: /usr/bin/soffice";
+   return "soffice: /usr/bin/soffice /usr/bin/X11/soffice";
  }
 }
