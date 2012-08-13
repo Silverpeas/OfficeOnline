@@ -10,13 +10,13 @@
     <connection>scm:git:git@github.com:Silverpeas/OfficeOnline.git</connection>
     <developerConnection>scm:git:git@github.com:Silverpeas/OfficeOnline.git</developerConnection>
     <url>https://github.com/Silverpeas/OfficeOnline</url>
-    <tag>HEAD</tag>
+    <tag>office-online-5.4</tag>
   </scm>
 
   <groupId>com.silverpeas.services</groupId>
   <artifactId>office-online</artifactId>
   <packaging>jar</packaging>
-  <version>5.4-SNAPSHOT</version>
+  <version>5.4</version>
   <name>Online Office Editor</name>
   <build>
     <finalName>OpenOfficeLauncher</finalName>
