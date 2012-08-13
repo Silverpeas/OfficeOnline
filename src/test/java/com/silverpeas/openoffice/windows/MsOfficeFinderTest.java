@@ -32,7 +32,7 @@ import junit.framework.TestCase;
  */
 public class MsOfficeFinderTest extends TestCase {
 
-  private static final String INSTALLED_OFFICE_PATH = "C:\\PROGRA~2\\MICROS~1\\Office12\\";
+  private static final String INSTALLED_OFFICE_PATH = "C:\\PROGRA~1\\MICROS~1\\Office12\\";
 
   MsOfficeRegistryHelper helper = new MsOfficeRegistryHelper();
 
