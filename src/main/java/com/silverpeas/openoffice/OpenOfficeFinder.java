@@ -58,5 +58,5 @@ public abstract class OpenOfficeFinder implements OfficeFinder {
     return false;
   }
 
-  public abstract String findOpenOffice() throws OfficeNotFoundException;
+  public abstract String findOpenOffice() throws OpenOfficeNotFoundException;
 }
