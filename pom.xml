@@ -4,7 +4,7 @@
   <parent>
     <groupId>com.silverpeas</groupId>
     <artifactId>parent</artifactId>
-    <version>23</version>
+    <version>24</version>
   </parent>
   <scm>
     <connection>scm:git:git@github.com:Silverpeas/OfficeOnline.git</connection>
@@ -16,7 +16,7 @@
   <groupId>com.silverpeas.services</groupId>
   <artifactId>office-online</artifactId>
   <packaging>jar</packaging>
-  <version>5.5-SNAPSHOT</version>
+  <version>5.11.1-SNAPSHOT</version>
   <name>Online Office Editor</name>
   <build>
     <finalName>OpenOfficeLauncher</finalName>
@@ -65,12 +65,6 @@
           <artifactId>commons-collections</artifactId>
           <groupId>commons-collections</groupId>
         </exclusion>
-        <!--
-        <exclusion>
-          <artifactId>jackrabbit-jcr-commons</artifactId>
-          <groupId>org.apache.jackrabbit</groupId>
-        </exclusion>
-        -->
       </exclusions>
     </dependency>
     <dependency>
