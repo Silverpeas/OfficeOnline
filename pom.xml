@@ -68,6 +68,10 @@
       </exclusions>
     </dependency>
     <dependency>
+      <artifactId>jackrabbit-jcr-commons</artifactId>
+      <groupId>org.apache.jackrabbit</groupId>
+    </dependency>
+    <dependency>
       <groupId>xerces</groupId>
       <artifactId>xercesImpl</artifactId>
       <scope>runtime</scope>
