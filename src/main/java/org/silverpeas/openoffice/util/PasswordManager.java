@@ -96,7 +96,12 @@ public class PasswordManager {
    */
   public static AuthenticationInfo extractAuthenticationInfo(String login, String encodedPassword) {
     try {
-      char[] clearPwd = decodePassword(encodedPassword);
+      char[] clearPwd;
+      if (encodedPassword != null && !encodedPassword.isEmpty()) {
+        clearPwd = decodePassword(encodedPassword);
+      } else {
+        clearPwd = new char[0];
+      }
       if (clearPwd.length <= 0) {
         clearPwd = promptForpassword();
       }
