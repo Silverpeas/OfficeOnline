@@ -20,6 +20,16 @@
  */
 package org.silverpeas.openoffice;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.activation.MimetypesFileTypeMap;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+
 import org.silverpeas.openoffice.util.MessageDisplayer;
 import org.silverpeas.openoffice.util.MessageUtil;
 import org.silverpeas.openoffice.util.MsOfficeType;
@@ -27,14 +37,6 @@ import org.silverpeas.openoffice.util.OsEnum;
 import org.silverpeas.openoffice.util.PasswordManager;
 import org.silverpeas.openoffice.util.UrlExtractor;
 import org.silverpeas.openoffice.windows.MsOfficePathFinder;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.activation.MimetypesFileTypeMap;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 
 /**
  * @author Emmanuel Hugonnet
