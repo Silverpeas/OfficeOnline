@@ -100,9 +100,9 @@ public class PasswordManager {
       if (encodedPassword != null && !encodedPassword.isEmpty()) {
         clearPwd = decodePassword(encodedPassword);
       } else {
-        clearPwd = new char[0];
+        clearPwd = null;
       }
-      if (clearPwd.length <= 0) {
+      if (clearPwd == null || clearPwd.length <= 0) {
         clearPwd = promptForpassword();
       }
       String decodedLogin = URLDecoder.decode(login, "UTF-8");
@@ -118,6 +118,8 @@ public class PasswordManager {
   }
 
   private static char[] promptForpassword() {
+    Logger.getLogger(Launcher.class.getName()).log(Level.INFO,
+        "No password provided, need to ask for one");
     return MessageDisplayer.displayPromptPassword();
   }
 }

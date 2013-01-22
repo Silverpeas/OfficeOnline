@@ -51,8 +51,13 @@ public class FileWebDavAccessManager {
    * @param auth authentication info
    */
   public FileWebDavAccessManager(AuthenticationInfo auth) {
-    this.userName = auth.getLogin();
-    this.password = auth.getPassword();
+    if (auth != null) {
+      this.userName = auth.getLogin();
+      this.password = auth.getPassword();
+    } else {
+      this.userName = "";
+      this.password = new char[0];
+    }
   }
 
   /**
@@ -69,10 +74,10 @@ public class FileWebDavAccessManager {
     // Let's lock the file
     lockToken = webdav.lockFile(uri, userName);
     logger.log(Level.INFO, "{0}{1}{2}", new Object[]{MessageUtil.getMessage("info.webdav.locked"),
-          ' ', lockToken});
+      ' ', lockToken});
     String tmpFile = webdav.getFile(uri, lockToken);
     logger.log(Level.INFO, "{0}{1}{2}", new Object[]{MessageUtil.getMessage(
-          "info.webdav.file.locally.saved"), ' ', tmpFile});
+      "info.webdav.file.locally.saved"), ' ', tmpFile});
     return tmpFile;
   }
 
@@ -88,7 +93,7 @@ public class FileWebDavAccessManager {
     URI uri = getURI(url);
     WebdavManager webdav = new WebdavManager(uri.getHost(), userName, new String(password));
     logger.log(Level.INFO, "{0}{1}{2}", new Object[]{MessageUtil.getMessage("info.webdav.put"), ' ',
-          tmpFilePath});
+      tmpFilePath});
     webdav.putFile(uri, tmpFilePath, lockToken);
     logger.log(Level.INFO, "{0}{1}{2}",
         new Object[]{MessageUtil.getMessage("info.webdav.unlocking"), ' ', uri.getEscapedURI()});

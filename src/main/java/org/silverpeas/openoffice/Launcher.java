@@ -72,6 +72,8 @@ public class Launcher {
       AuthenticationInfo authInfo = null;
       if (args.length >= 5) {
         authInfo = PasswordManager.extractAuthenticationInfo(args[3], args[4]);
+      } else  if (args.length >= 4 ) {
+        authInfo = PasswordManager.extractAuthenticationInfo(args[3], null);
       }
       MsOfficeType contentType = getContentType(UrlExtractor.decodeUrl(args[0]));
       logger.log(Level.FINE, "{0}{1}", new Object[]{MessageUtil.getMessage("info.document.type"),
