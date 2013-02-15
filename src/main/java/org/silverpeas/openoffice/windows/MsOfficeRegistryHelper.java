@@ -1,25 +1,22 @@
 /**
  * Copyright (C) 2000 - 2009 Silverpeas
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU Affero General Public License as published by the Free Software Foundation, either version 3
+ * of the License, or (at your option) any later version.
  *
- * As a special exception to the terms and conditions of version 3.0 of
- * the GPL, you may redistribute this Program in connection with Free/Libre
- * Open Source Software ("FLOSS") applications as described in Silverpeas's
- * FLOSS exception.  You should have received a copy of the text describing
- * the FLOSS exception, and it is also available here:
+ * As a special exception to the terms and conditions of version 3.0 of the GPL, you may
+ * redistribute this Program in connection with Free/Libre Open Source Software ("FLOSS")
+ * applications as described in Silverpeas's FLOSS exception. You should have received a copy of the
+ * text describing the FLOSS exception, and it is also available here:
  * "http://repository.silverpeas.com/legal/licensing"
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Affero General Public License for more details.
  *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <http://www.gnu.org/licenses/>.
  */
 package org.silverpeas.openoffice.windows;
 
@@ -43,8 +40,10 @@ public class MsOfficeRegistryHelper implements OfficeFinder {
   static final String POWERPOINT = "Powerpoint.Application";
   static final String WORD = "Word.Application";
   static final String FRONTPAGE = "FrontPage.Application";
+  static final String BASE_KEY_OFFICE = "\"HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Office\\";
   static final String BASE_APPLICATION_KEY = "\"HKEY_LOCAL_MACHINE\\Software\\Classes\\";
-  static final String BASE_KEY_64_CLSID = "\"HKEY_LOCAL_MACHINE\\Software\\Wow6432Node\\Classes\\CLSID\\";
+  static final String BASE_KEY_64_CLSID =
+      "\"HKEY_LOCAL_MACHINE\\Software\\Wow6432Node\\Classes\\CLSID\\";
   static final String BASE_KEY_CLSID = "\"HKEY_LOCAL_MACHINE\\Software\\Classes\\CLSID\\";
   static final Pattern AUTOMATION = Pattern.compile(
       "\\s*/[aA][uU][tT][oO][mM][aA][tT][iI][oO][nN]\\s*");
@@ -61,7 +60,11 @@ public class MsOfficeRegistryHelper implements OfficeFinder {
         path = RegistryKeyReader.readKey(BASE_KEY_64_CLSID + clsid + "\\LocalServer32\"");
       }
       if (path != null) {
-        return '"' + extractPath(path) + '"';
+        String extractedPath = extractPath(path);
+        if (!extractedPath.startsWith("\"")) {
+          extractedPath = '"' + extractedPath + '"';
+        }
+        return extractedPath;
       }
     }
     return null;

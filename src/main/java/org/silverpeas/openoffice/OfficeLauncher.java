@@ -32,6 +32,7 @@ import org.silverpeas.openoffice.util.MessageUtil;
 import org.silverpeas.openoffice.util.MsOfficeType;
 import org.silverpeas.openoffice.util.OsEnum;
 import org.silverpeas.openoffice.windows.FileWebDavAccessManager;
+import org.silverpeas.openoffice.windows.MsOfficeVersion;
 
 /**
  * @author Emmanuel Hugonnet
@@ -61,7 +62,7 @@ public class OfficeLauncher {
     logger.log(Level.INFO, "Are we using Office 2007 : {0}", finder.isMicrosoftOffice());
     logger.log(Level.INFO, "We are on {0} OS", OsEnum.getOS());
     boolean modeDisconnected = ((OsEnum.isWindows() && useDeconnectedMode) || OsEnum.getOS()
-        == OsEnum.MAC_OSX) && finder.isMicrosoftOffice();
+        == OsEnum.MAC_OSX) && finder.isMicrosoftOffice();    
     switch (type) {
       case EXCEL:
         return launch(finder.findSpreadsheet(), url, modeDisconnected, authInfo);
@@ -114,8 +115,12 @@ public class OfficeLauncher {
       }
     } else {
       // Standard mode : just open it
-      logger.log(Level.INFO, "The exact exec line: {0} {2}", new Object[]{path, url});
-      Process process = Runtime.getRuntime().exec(path + ' ' + url);
+      String webdavUrl = url;
+      if(OsEnum.isWindows() && MsOfficeVersion.isOldOffice()) {
+        webdavUrl = webdavUrl.replace("/repository/", "/repository2000/");
+      }
+      logger.log(Level.INFO, "The exact exec line: {0} {2}", new Object[]{path, webdavUrl});
+      Process process = Runtime.getRuntime().exec(path + ' ' + webdavUrl);
       return process.waitFor();
     }
   }
