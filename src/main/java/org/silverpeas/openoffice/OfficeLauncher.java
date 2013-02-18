@@ -59,20 +59,20 @@ public class OfficeLauncher {
   public static int launch(MsOfficeType type, String url, AuthenticationInfo authInfo,
       boolean useDeconnectedMode) throws IOException, InterruptedException, OfficeNotFoundException {
     OfficeFinder finder = FinderFactory.getFinder(type);
-    logger.log(Level.INFO, "Are we using Office 2007 : {0}", finder.isMicrosoftOffice());
+    logger.log(Level.INFO, "Are we using Office : {0}", finder.isMicrosoftOffice());
     logger.log(Level.INFO, "We are on {0} OS", OsEnum.getOS());
     boolean modeDisconnected = ((OsEnum.isWindows() && useDeconnectedMode) || OsEnum.getOS()
         == OsEnum.MAC_OSX) && finder.isMicrosoftOffice();    
     switch (type) {
       case EXCEL:
-        return launch(finder.findSpreadsheet(), url, modeDisconnected, authInfo);
+        return launch(type, finder.findSpreadsheet(), url, modeDisconnected, authInfo);
       case POWERPOINT:
-        return launch(finder.findPresentation(), url, modeDisconnected, authInfo);
+        return launch(type, finder.findPresentation(), url, modeDisconnected, authInfo);
       case WORD:
-        return launch(finder.findWordEditor(), url, modeDisconnected, authInfo);
+        return launch(type, finder.findWordEditor(), url, modeDisconnected, authInfo);
       case NONE:
       default:
-        return launch(finder.findOther(), url, modeDisconnected, authInfo);
+        return launch(type, finder.findOther(), url, modeDisconnected, authInfo);
     }
   }
 
@@ -87,7 +87,7 @@ public class OfficeLauncher {
    * @throws IOException
    * @throws InterruptedException
    */
-  public static int launch(String path, String url, boolean modeDisconnected,
+  protected static int launch(MsOfficeType type, String path, String url, boolean modeDisconnected,
       AuthenticationInfo auth) throws IOException, InterruptedException {
     logger.log(Level.INFO, "The path: {0}", path);
     logger.log(Level.INFO, "The url: {0}", url);
@@ -116,7 +116,7 @@ public class OfficeLauncher {
     } else {
       // Standard mode : just open it
       String webdavUrl = url;
-      if(OsEnum.isWindows() && MsOfficeVersion.isOldOffice()) {
+      if(OsEnum.isWindows() && MsOfficeVersion.isOldOffice(type)) {
         webdavUrl = webdavUrl.replace("/repository/", "/repository2000/");
       }
       logger.log(Level.INFO, "The exact exec line: {0} {2}", new Object[]{path, webdavUrl});
