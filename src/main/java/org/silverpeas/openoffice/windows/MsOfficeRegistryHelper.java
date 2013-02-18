@@ -27,6 +27,8 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.silverpeas.openoffice.util.RegistryApplicationKey;
+
 /**
  * @author Emmanuel Hugonnet
  */
@@ -34,25 +36,21 @@ public class MsOfficeRegistryHelper implements OfficeFinder {
 
   static final Logger logger = Logger.getLogger(MsOfficeRegistryHelper.class.getName());
   static final OfficeFinder msOfficeFinder = new MsOfficePathFinder();
-  static final String ACCESS = "Access.Application";
-  static final String EXCEL = "Excel.Application";
-  static final String OUTLOOK = "Outlook.Application";
-  static final String POWERPOINT = "Powerpoint.Application";
-  static final String WORD = "Word.Application";
-  static final String FRONTPAGE = "FrontPage.Application";
   static final String BASE_KEY_OFFICE = "\"HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Office\\";
-  static final String BASE_APPLICATION_KEY = "\"HKEY_LOCAL_MACHINE\\Software\\Classes\\";
+  public static final String BASE_APPLICATION_KEY = "\"HKEY_LOCAL_MACHINE\\Software\\Classes\\";
   static final String BASE_KEY_64_CLSID =
       "\"HKEY_LOCAL_MACHINE\\Software\\Wow6432Node\\Classes\\CLSID\\";
   static final String BASE_KEY_CLSID = "\"HKEY_LOCAL_MACHINE\\Software\\Classes\\CLSID\\";
   static final Pattern AUTOMATION = Pattern.compile(
       "\\s*/[aA][uU][tT][oO][mM][aA][tT][iI][oO][nN]\\s*");
 
-  protected String getClsid(String type) {
-    return RegistryKeyReader.readKey(BASE_APPLICATION_KEY + type + "\\CLSID\"");
+  protected String getClsid(RegistryApplicationKey type) {
+    return RegistryKeyReader.readKey(BASE_APPLICATION_KEY + type.getApplicationKey() + "\\CLSID\"");
   }
 
-  protected String getPath(String type) {
+ 
+
+  protected String getPath(RegistryApplicationKey type) {
     String clsid = getClsid(type);
     if (clsid != null) {
       String path = RegistryKeyReader.readKey(BASE_KEY_CLSID + clsid + "\\LocalServer32\"");
@@ -81,7 +79,7 @@ public class MsOfficeRegistryHelper implements OfficeFinder {
 
   @Override
   public String findSpreadsheet() throws OfficeNotFoundException {
-    String msPath = getPath(EXCEL);
+    String msPath = getPath(RegistryApplicationKey.EXCEL);
     if (msPath == null) {
       msPath = msOfficeFinder.findSpreadsheet();
     }
@@ -90,7 +88,7 @@ public class MsOfficeRegistryHelper implements OfficeFinder {
 
   @Override
   public String findPresentation() throws OfficeNotFoundException {
-    String msPath = getPath(POWERPOINT);
+    String msPath = getPath(RegistryApplicationKey.POWERPOINT);
     if (msPath == null) {
       msPath = msOfficeFinder.findPresentation();
     }
@@ -99,7 +97,7 @@ public class MsOfficeRegistryHelper implements OfficeFinder {
 
   @Override
   public String findWordEditor() throws OfficeNotFoundException {
-    String msPath = getPath(WORD);
+    String msPath = getPath(RegistryApplicationKey.WORD);
     if (msPath == null) {
       msPath = msOfficeFinder.findWordEditor();
     } else {
@@ -115,6 +113,7 @@ public class MsOfficeRegistryHelper implements OfficeFinder {
 
   @Override
   public boolean isMicrosoftOffice() {
-    return getPath(EXCEL) != null || getPath(POWERPOINT) != null || getPath(WORD) != null;
+    return getPath(RegistryApplicationKey.EXCEL) != null || getPath(
+        RegistryApplicationKey.POWERPOINT) != null || getPath(RegistryApplicationKey.WORD) != null;
   }
 }
