@@ -58,7 +58,7 @@ public class MsOfficeRegistryHelper implements OfficeFinder {
         path = RegistryKeyReader.readKey(BASE_KEY_64_CLSID + clsid + "\\LocalServer32\"");
       }
       if (path != null) {
-        String extractedPath = extractPath(path);
+        String extractedPath = extractPath(path).trim();
         if (!extractedPath.startsWith("\"")) {
           extractedPath = '"' + extractedPath + '"';
         }

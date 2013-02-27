@@ -43,18 +43,17 @@ public class OfficeLauncher {
 
   /**
    * Launch the document editor.
+   *
    * @param type type of editor for the document (word editor, presentation editor, etc.)
    * @param url the url to the document.
    * @param authInfo authentication parameters
-   * @param useDeconnectedMode : set to true if you want to activate the Disconnected mode : 
-   *  1) download file using webdav to local temp directory 
-   *  2) open it 
-   *  3) after close, send it back to silverpeas, still using webdav 
-   *  4) delete temp file locally
+   * @param useDeconnectedMode : set to true if you want to activate the Disconnected mode : 1)
+   * download file using webdav to local temp directory 2) open it 3) after close, send it back to
+   * silverpeas, still using webdav 4) delete temp file locally
    * @return the result of the process.
    * @throws IOException
    * @throws InterruptedException
-   * @throws OfficeNotFoundException 
+   * @throws OfficeNotFoundException
    */
   public static int launch(MsOfficeType type, String url, AuthenticationInfo authInfo,
       boolean useDeconnectedMode) throws IOException, InterruptedException, OfficeNotFoundException {
@@ -62,7 +61,7 @@ public class OfficeLauncher {
     logger.log(Level.INFO, "Are we using Office : {0}", finder.isMicrosoftOffice());
     logger.log(Level.INFO, "We are on {0} OS", OsEnum.getOS());
     boolean modeDisconnected = ((OsEnum.isWindows() && useDeconnectedMode) || OsEnum.getOS()
-        == OsEnum.MAC_OSX) && finder.isMicrosoftOffice();    
+        == OsEnum.MAC_OSX) && finder.isMicrosoftOffice();
     switch (type) {
       case EXCEL:
         return launch(type, finder.findSpreadsheet(), url, modeDisconnected, authInfo);
@@ -116,7 +115,8 @@ public class OfficeLauncher {
     } else {
       // Standard mode : just open it
       String webdavUrl = url;
-      if(OsEnum.isWindows() && MsOfficeVersion.isOldOffice(type)) {
+      if (OsEnum.getOS() == OsEnum.WINDOWS_XP || (OsEnum.isWindows() && MsOfficeVersion.isOldOffice(
+          type))) {
         webdavUrl = webdavUrl.replace("/repository/", "/repository2000/");
       }
       logger.log(Level.INFO, "The exact exec line: {0} {2}", new Object[]{path, webdavUrl});
