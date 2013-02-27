@@ -33,12 +33,15 @@ package org.silverpeas.openoffice.util;
  */
 public enum MsOfficeType {
 
-  NONE(""), EXCEL("application/vnd.ms-excel"), WORD("application/vnd.ms-word"), POWERPOINT(
-      "application/vnd.ms-powerpoint");
+  NONE("", RegistryApplicationKey.NONE), 
+  EXCEL("application/vnd.ms-excel", RegistryApplicationKey.EXCEL), 
+  WORD("application/vnd.ms-word", RegistryApplicationKey.WORD), 
+  POWERPOINT("application/vnd.ms-powerpoint", RegistryApplicationKey.POWERPOINT);
   private String contentType;
-
-  private MsOfficeType(String contentType) {
+  private RegistryApplicationKey registryKey;
+  private MsOfficeType(String contentType, RegistryApplicationKey registryKey) {
     this.contentType = contentType;
+    this.registryKey = registryKey;
   }
 
   public static MsOfficeType valueOfMimeType(String mimeType) {
@@ -52,6 +55,15 @@ public enum MsOfficeType {
       return POWERPOINT;
     }
     return NONE;
+  }
+  
+  public RegistryApplicationKey getRegistryApplicationKey() {
+    return this.registryKey;
+  }
+
+  
+  public String getApplicationKey() {
+    return this.registryKey.getApplicationKey();
   }
 
   public boolean isMsOfficeCompatible() {

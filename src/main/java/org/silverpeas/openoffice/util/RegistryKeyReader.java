@@ -54,4 +54,20 @@ public class RegistryKeyReader {
     }
     return null;
   }
+  
+  public static boolean checkRegistryKey(String baseKey, String key) {
+    try {
+      Process process = Runtime.getRuntime().exec(REGQUERY_UTIL + baseKey + " /f" + key);
+      StreamReader reader = new StreamReader(process.getInputStream());
+      reader.start();
+      process.waitFor();
+      reader.join();
+      String result = reader.getResult();
+      int p = result.indexOf(baseKey + '\\' + key);
+      return (p != -1);
+    } catch (Exception e) {
+      logger.log(Level.SEVERE, MessageUtil.getMessage("error.reading.registry"), e);
+    }
+    return false;
+  }
 }
