@@ -32,6 +32,7 @@ import org.silverpeas.openoffice.util.MessageUtil;
 import org.silverpeas.openoffice.util.MsOfficeType;
 import org.silverpeas.openoffice.util.OsEnum;
 import org.silverpeas.openoffice.windows.FileWebDavAccessManager;
+import org.silverpeas.openoffice.windows.MsOfficeVersion;
 
 /**
  * @author Emmanuel Hugonnet
@@ -42,36 +43,41 @@ public class OfficeLauncher {
 
   /**
    * Launch the document editor.
+   *
    * @param type type of editor for the document (word editor, presentation editor, etc.)
    * @param url the url to the document.
    * @param authInfo authentication parameters
-   * @param useDeconnectedMode : set to true if you want to activate the Disconnected mode : 
-   *  1) download file using webdav to local temp directory 
-   *  2) open it 
-   *  3) after close, send it back to silverpeas, still using webdav 
-   *  4) delete temp file locally
+   * @param useDeconnectedMode : set to true if you want to activate the Disconnected mode : 1)
+   * download file using webdav to local temp directory 2) open it 3) after close, send it back to
+   * silverpeas, still using webdav 4) delete temp file locally
    * @return the result of the process.
    * @throws IOException
    * @throws InterruptedException
-   * @throws OfficeNotFoundException 
+   * @throws OfficeNotFoundException
    */
   public static int launch(MsOfficeType type, String url, AuthenticationInfo authInfo,
       boolean useDeconnectedMode) throws IOException, InterruptedException, OfficeNotFoundException {
     OfficeFinder finder = FinderFactory.getFinder(type);
-    logger.log(Level.INFO, "Are we using Office 2007 : {0}", finder.isMicrosoftOffice());
     logger.log(Level.INFO, "We are on {0} OS", OsEnum.getOS());
+    String webdavUrl = url;
     boolean modeDisconnected = ((OsEnum.isWindows() && useDeconnectedMode) || OsEnum.getOS()
         == OsEnum.MAC_OSX) && finder.isMicrosoftOffice();
+    if (!modeDisconnected) {
+      if (finder.isMicrosoftOffice() && (OsEnum.getOS() == OsEnum.WINDOWS_XP || (OsEnum
+          .isWindows() && MsOfficeVersion.isOldOffice(type)))) {
+        webdavUrl = webdavUrl.replace("/repository/", "/repository2000/");
+      }
+    }
     switch (type) {
       case EXCEL:
-        return launch(finder.findSpreadsheet(), url, modeDisconnected, authInfo);
+        return launch(type, finder.findSpreadsheet(), webdavUrl, modeDisconnected, authInfo);
       case POWERPOINT:
-        return launch(finder.findPresentation(), url, modeDisconnected, authInfo);
+        return launch(type, finder.findPresentation(), webdavUrl, modeDisconnected, authInfo);
       case WORD:
-        return launch(finder.findWordEditor(), url, modeDisconnected, authInfo);
+        return launch(type, finder.findWordEditor(), webdavUrl, modeDisconnected, authInfo);
       case NONE:
       default:
-        return launch(finder.findOther(), url, modeDisconnected, authInfo);
+        return launch(type, finder.findOther(), webdavUrl, modeDisconnected, authInfo);
     }
   }
 
@@ -86,11 +92,10 @@ public class OfficeLauncher {
    * @throws IOException
    * @throws InterruptedException
    */
-  public static int launch(String path, String url, boolean modeDisconnected,
+  protected static int launch(MsOfficeType type, String path, String url, boolean modeDisconnected,
       AuthenticationInfo auth) throws IOException, InterruptedException {
     logger.log(Level.INFO, "The path: {0}", path);
     logger.log(Level.INFO, "The url: {0}", url);
-    logger.log(Level.INFO, "The command line: {0} {1}", new Object[]{path, url});
     if (modeDisconnected) {
       try {
         String webdavUrl = url;
@@ -114,7 +119,7 @@ public class OfficeLauncher {
       }
     } else {
       // Standard mode : just open it
-      logger.log(Level.INFO, "The exact exec line: {0} {2}", new Object[]{path, url});
+      logger.log(Level.INFO, "The exact exec line: {0} {1}", new Object[]{path, url});
       Process process = Runtime.getRuntime().exec(path + ' ' + url);
       return process.waitFor();
     }

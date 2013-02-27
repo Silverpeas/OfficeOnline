@@ -32,7 +32,7 @@ import org.silverpeas.openoffice.util.RegistryKeyReader;
 public class WindowsLibreOfficeFinder extends OpenOfficeFinder {
 
   static final Logger logger = Logger.getLogger(WindowsLibreOfficeFinder.class.getName());
-  private static final String[] VERSIONS = new String[]{"3.5", "3.6"};
+  private static final String[] VERSIONS = new String[]{"3.5", "3.6", "4.0"};
   private static final String GLOBAL_LIBRE_OFFICE_FOLDER =
       "\"HKEY_LOCAL_MACHINE\\SOFTWARE\\LibreOffice\\LibreOffice\\";
   private static final String GLOBAL_LIBRE_OFFICE_FOLDER_64 =
