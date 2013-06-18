@@ -34,7 +34,7 @@ import org.silverpeas.openoffice.util.RegistryKeyReader;
 public enum MsOfficeVersion {
 
   Office95(7), Office97(8), Office2000(9), OfficeXP(10), Office2003(11),
-  Office2007(12), Office2010(14);
+  Office2007(12), Office2010(14), Office2013(15);
   private final int numeralVersion;
 
   private MsOfficeVersion(int numeralVersion) {
