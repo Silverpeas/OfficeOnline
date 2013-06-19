@@ -24,8 +24,6 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.commons.httpclient.HttpException;
-
 import org.silverpeas.openoffice.util.FinderFactory;
 import org.silverpeas.openoffice.util.MessageDisplayer;
 import org.silverpeas.openoffice.util.MessageUtil;
@@ -33,6 +31,8 @@ import org.silverpeas.openoffice.util.MsOfficeType;
 import org.silverpeas.openoffice.util.OsEnum;
 import org.silverpeas.openoffice.windows.FileWebDavAccessManager;
 import org.silverpeas.openoffice.windows.MsOfficeVersion;
+
+import org.apache.commons.httpclient.HttpException;
 
 /**
  * @author Emmanuel Hugonnet

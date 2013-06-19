@@ -60,7 +60,8 @@ public enum OsEnum {
 
   public static boolean isWindows() {
     OsEnum currentOS = getOS();
-    return currentOS == WINDOWS_SEVEN || currentOS == WINDOWS_XP || currentOS == WINDOWS_VISTA;
+    return currentOS == WINDOWS_SEVEN || currentOS == WINDOWS_XP || currentOS == WINDOWS_VISTA
+        || currentOS == WINDOWS_8;
   }
 
   public static boolean isLinux() {

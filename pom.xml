@@ -83,6 +83,23 @@
       <build>
         <plugins>
           <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jar-plugin</artifactId>
+            <configuration>
+              <archive>
+                <index>true</index>
+                <manifest>
+                  <addClasspath>true</addClasspath>
+                  <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                  <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                </manifest>
+                <manifestEntries>
+                  <Permissions>all-permissions</Permissions>
+                </manifestEntries>
+              </archive>
+            </configuration>
+          </plugin>
+          <plugin>
             <artifactId>maven-jarsigner-plugin</artifactId>
             <executions>
               <execution>
@@ -98,7 +115,7 @@
                 </goals>
                 <configuration>
                   <archiveDirectory>${project.build.directory}/dependency</archiveDirectory>
-                  <removeExistingSignatures>true</removeExistingSignatures>	
+                  <removeExistingSignatures>true</removeExistingSignatures>
                 </configuration>
               </execution>
               <execution>
