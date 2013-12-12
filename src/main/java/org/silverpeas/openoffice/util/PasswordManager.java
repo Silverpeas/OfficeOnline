@@ -27,10 +27,8 @@ import java.security.GeneralSecurityException;
 import java.security.Key;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
-
 import org.silverpeas.openoffice.AuthenticationInfo;
 import org.silverpeas.openoffice.Launcher;
 
@@ -102,8 +100,8 @@ public class PasswordManager {
       } else {
         clearPwd = null;
       }
-      if (clearPwd == null || clearPwd.length <= 0) {
-        clearPwd = promptForpassword();
+      if (clearPwd == null) {
+        clearPwd = new char[0];
       }
       String decodedLogin = URLDecoder.decode(login, "UTF-8");
       return new AuthenticationInfo(decodedLogin, clearPwd);

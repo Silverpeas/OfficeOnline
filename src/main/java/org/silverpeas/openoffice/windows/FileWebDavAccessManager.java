@@ -24,11 +24,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.URI;
 import org.apache.commons.httpclient.URIException;
-
 import org.silverpeas.openoffice.AuthenticationInfo;
 import org.silverpeas.openoffice.util.MessageUtil;
 import org.silverpeas.openoffice.windows.webdav.WebdavManager;
@@ -40,10 +38,10 @@ import org.silverpeas.openoffice.windows.webdav.WebdavManager;
  */
 public class FileWebDavAccessManager {
 
-  private String userName;
-  private char[] password;
+  private final String userName;
+  private final char[] password;
   private String lockToken = null;
-  static Logger logger = Logger.getLogger(FileWebDavAccessManager.class.getName());
+  static final Logger logger = Logger.getLogger(FileWebDavAccessManager.class.getName());
 
   /**
    * The AccessManager is inited with authentication info to avoid login prompt
@@ -75,10 +73,15 @@ public class FileWebDavAccessManager {
     lockToken = webdav.lockFile(uri, userName);
     logger.log(Level.INFO, "{0}{1}{2}", new Object[]{MessageUtil.getMessage("info.webdav.locked"),
       ' ', lockToken});
-    String tmpFile = webdav.getFile(uri, lockToken);
-    logger.log(Level.INFO, "{0}{1}{2}", new Object[]{MessageUtil.getMessage(
-      "info.webdav.file.locally.saved"), ' ', tmpFile});
-    return tmpFile;
+    try {
+      String tmpFile = webdav.getFile(uri, lockToken);
+      logger.log(Level.INFO, "{0}{1}{2}", new Object[]{MessageUtil.getMessage(
+        "info.webdav.file.locally.saved"), ' ', tmpFile});
+      return tmpFile;
+    } catch (IOException ex) {
+      webdav.unlockFile(uri, lockToken);
+      throw ex;
+    }
   }
 
   /**
@@ -108,6 +111,6 @@ public class FileWebDavAccessManager {
   }
 
   private static URI getURI(String url) throws URIException {
-    return new URI(url.replaceAll("%20", " "), false, "UTF-8");
+    return new URI(url, false, "UTF-8");
   }
 }
