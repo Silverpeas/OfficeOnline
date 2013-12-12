@@ -20,44 +20,45 @@
  */
 package org.silverpeas.openoffice.windows.webdav;
 
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.apache.commons.httpclient.URI;
-import org.apache.commons.httpclient.Credentials;
-import org.apache.commons.httpclient.HostConfiguration;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpConnectionManager;
-import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
-import org.apache.commons.httpclient.UsernamePasswordCredentials;
-import org.apache.commons.httpclient.auth.AuthScope;
-import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
-import org.apache.jackrabbit.webdav.client.methods.LockMethod;
-import org.apache.jackrabbit.webdav.lock.Scope;
-import org.apache.jackrabbit.webdav.lock.Type;
-
-import org.silverpeas.openoffice.util.MessageUtil;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.net.URLDecoder;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ProgressMonitor;
 import javax.swing.ProgressMonitorInputStream;
 import javax.swing.UIManager;
+import org.apache.commons.httpclient.Credentials;
+import org.apache.commons.httpclient.HostConfiguration;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpConnectionManager;
 import org.apache.commons.httpclient.HttpVersion;
+import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
+import org.apache.commons.httpclient.URI;
+import org.apache.commons.httpclient.URIException;
+import org.apache.commons.httpclient.UsernamePasswordCredentials;
+import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.ByteArrayRequestEntity;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.methods.HeadMethod;
 import org.apache.commons.httpclient.methods.RequestEntity;
 import org.apache.commons.httpclient.params.HttpClientParams;
+import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
 import org.apache.jackrabbit.webdav.DavException;
+import org.apache.jackrabbit.webdav.client.methods.LockMethod;
 import org.apache.jackrabbit.webdav.client.methods.PutMethod;
 import org.apache.jackrabbit.webdav.client.methods.UnLockMethod;
+import org.apache.jackrabbit.webdav.lock.Scope;
+import org.apache.jackrabbit.webdav.lock.Type;
+import org.silverpeas.openoffice.util.MessageUtil;
 
-import static java.net.HttpURLConnection.HTTP_OK;
 import static java.net.HttpURLConnection.HTTP_CREATED;
+import static java.net.HttpURLConnection.HTTP_OK;
 
 /**
  * Simple class to help manipulate Webdav ressources.
@@ -66,7 +67,7 @@ import static java.net.HttpURLConnection.HTTP_CREATED;
  */
 public class WebdavManager {
 
-  private HttpClient client;
+  private final HttpClient client;
   static final Logger logger = Logger.getLogger(WebdavManager.class.getName());
 
   /**
@@ -102,11 +103,11 @@ public class WebdavManager {
    * @throws IOException
    */
   public String lockFile(URI uri, String login) throws IOException {
+    String url = decodeURI(uri);
     logger.log(Level.INFO, "{0} {1}", new Object[]{MessageUtil.getMessage("info.webdav.locking"),
-          uri.getEscapedURI()});
+      url});
     // Let's lock the file
-    LockMethod lockMethod = new LockMethod(uri.getEscapedURI(),
-        Scope.EXCLUSIVE, Type.WRITE, login, 600000l, false);
+    LockMethod lockMethod = new LockMethod(url, Scope.EXCLUSIVE, Type.WRITE, login, 600000l, false);
     client.executeMethod(lockMethod);
     if (lockMethod.succeeded()) {
       return lockMethod.getLockToken();
@@ -130,12 +131,13 @@ public class WebdavManager {
     if (lockToken == null || lockToken.isEmpty()) {
       return;
     }
-    UnLockMethod unlockMethod = new UnLockMethod(uri.getEscapedURI(), lockToken);
+    String url = decodeURI(uri);
+    UnLockMethod unlockMethod = new UnLockMethod(url, lockToken);
     client.executeMethod(unlockMethod);
     if (unlockMethod.getStatusCode() != 200 && unlockMethod.getStatusCode() != 204) {
       logger.log(Level.INFO, "{0} {1}", new Object[]{MessageUtil.
-            getMessage("error.webdav.unlocking"),
-            unlockMethod.getStatusCode()});
+        getMessage("error.webdav.unlocking"),
+        unlockMethod.getStatusCode()});
     }
     try {
       unlockMethod.checkSuccess();
@@ -175,14 +177,14 @@ public class WebdavManager {
     File tmpFile = new File(tempDir, fileName);
     FileOutputStream fos = new FileOutputStream(tmpFile);
     byte[] data = new byte[64];
-    int c = 0;
+    int c;
     try {
       while ((c = is.read(data)) > -1) {
         fos.write(data, 0, c);
       }
     } catch (InterruptedIOException ioinex) {
       logger.log(Level.INFO, "{0} {1}", new Object[]{MessageUtil.getMessage("info.user.cancel"),
-            ioinex.getMessage()});
+        ioinex.getMessage()});
       unlockFile(uri, lockToken);
       System.exit(0);
     } finally {
@@ -200,28 +202,26 @@ public class WebdavManager {
    * @throws IOException
    */
   public void putFile(URI uri, String localFilePath, String lockToken) throws IOException {
+    String url = decodeURI(uri);
     // Checks if file still exists
-    try {
-      executeGetFile(uri);
-    } catch (IOException ioex) {
+    if (!isFileExist(url)) {
       logger.log(Level.SEVERE, MessageUtil.getMessage("error.remote.file"));
       throw new IOException(MessageUtil.getMessage("error.remote.file"));
     }
-    PutMethod putMethod = new PutMethod(uri.getEscapedURI());
+    PutMethod putMethod = new PutMethod(url);
     logger.log(Level.INFO, "{0} {1}", new Object[]{MessageUtil.getMessage("info.webdav.put"),
-          localFilePath});
-    File file = new File(localFilePath);
+      localFilePath});
+    File localFile = new File(localFilePath);
+    String remoteFileName = uri.getPath().substring(uri.getPath().lastIndexOf('/') + 1);
     UploadProgressBar progress = new UploadProgressBar();
-    progress.setMaximum(new Long(file.length()).intValue());
-    progress.setMessage(MessageUtil.getMessage("uploading.remote.file") + ' ' + uri.getPath().
-        substring(
-        uri.getPath().lastIndexOf('/') + 1));
-    MonitoredInputStream is =
-        new MonitoredInputStream(new BufferedInputStream(new FileInputStream(file)));
+    progress.setMaximum(new Long(localFile.length()).intValue());
+    progress.setMessage(MessageUtil.getMessage("uploading.remote.file") + ' ' + remoteFileName);
+    MonitoredInputStream is = new MonitoredInputStream(new BufferedInputStream(new FileInputStream(
+        localFile)));
     is.addPropertyChangeListener(progress);
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     byte[] data = new byte[64];
-    int c = 0;
+    int c;
     while ((c = is.read(data)) > -1) {
       baos.write(data, 0, c);
     }
@@ -240,13 +240,24 @@ public class WebdavManager {
   }
 
   private GetMethod executeGetFile(URI uri) throws IOException {
-    GetMethod method = new GetMethod();
-    method.setURI(uri);
+    String url = decodeURI(uri);
+    logger.log(Level.INFO, "Get file located at: {0}", url);
+    GetMethod method = new GetMethod(url);
     client.executeMethod(method);
     if (method.getStatusCode() != HTTP_CREATED && method.getStatusCode() != HTTP_OK) {
       throw new IOException(MessageUtil.getMessage("error.get.remote.file")
           + ' ' + method.getStatusCode() + " - " + method.getStatusText());
     }
     return method;
+  }
+
+  private boolean isFileExist(String url) throws IOException {
+    HeadMethod method = new HeadMethod(url);
+    client.executeMethod(method);
+    return method.getStatusCode() == HTTP_OK;
+  }
+
+  private String decodeURI(URI uri) throws URIException {
+    return uri.getURI(); //.replaceAll(" ", "%20");
   }
 }
