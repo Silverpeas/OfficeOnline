@@ -97,6 +97,7 @@
                 </manifest>
                 <manifestEntries>
                   <Permissions>all-permissions</Permissions>
+								  <Codebase>*</Codebase>
                 </manifestEntries>
               </archive>
             </configuration>
