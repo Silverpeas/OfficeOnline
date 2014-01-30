@@ -132,7 +132,7 @@
               </execution>
             </executions>
             <configuration>
-              <alias>silverpeas</alias>
+              <alias>${silverpeas.alias}</alias>
               <storetype>jks</storetype>
               <keystore>${silverpeas.keystore}</keystore>
               <storepass>${silverpeas.storepass}</storepass>
@@ -160,10 +160,14 @@
     </profile>
   </profiles>
 
-
+  <!-- The properties keystore.filename, keystore.storepass, and keystore.alias
+       should be defined in your settings.xml file. These properties are used
+       to sign the code of the applets and of the webstart applications used in
+       Silverpeas. -->
   <properties>
-    <silverpeas.keystore>${env.SILVERPEAS_HOME}/bin/silverpeas.jks</silverpeas.keystore>
-    <silverpeas.storepass>changeit</silverpeas.storepass>
+    <silverpeas.keystore>${keystore.filename}</silverpeas.keystore>
+    <silverpeas.storepass>${keystore.storepass}</silverpeas.storepass>
+    <silverpeas.alias>${keystore.alias}</silverpeas.alias>
   </properties>
 
 
