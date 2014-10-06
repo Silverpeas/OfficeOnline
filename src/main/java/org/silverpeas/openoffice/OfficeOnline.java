@@ -30,6 +30,7 @@ import javax.activation.MimetypesFileTypeMap;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import org.silverpeas.openoffice.util.ApplicationArguments;
 import org.silverpeas.openoffice.util.MessageDisplayer;
 import org.silverpeas.openoffice.util.MessageUtil;
 import org.silverpeas.openoffice.util.MsOfficeType;
@@ -41,65 +42,41 @@ import org.silverpeas.openoffice.windows.MsOfficePathFinder;
 /**
  * @author Emmanuel Hugonnet
  */
-public class Launcher {
+public class OfficeOnline {
 
-  static final String LAUNCHER_VERSION = "2.12";
-  static final MimetypesFileTypeMap mimeTypes = new MimetypesFileTypeMap();
-  static final Logger logger = Logger.getLogger(Launcher.class.getName());
+  static final String LAUNCHER_VERSION = "3.0";
+
+  static final Logger logger = Logger.getLogger(OfficeOnline.class.getName());
 
   /**
    * @param args the command line arguments
    * @throws OfficeNotFoundException
    */
   public static void main(final String[] args) throws OfficeNotFoundException {
-    logger.log(Level.INFO, "{0} version {1}", new Object[]{MessageUtil.getMessage("app.title"),
-      LAUNCHER_VERSION});
-    logger.log(Level.INFO, "{0}{1}", new Object[]{MessageUtil.getMessage("info.url.encoded"),
-      args[0]});
+    logVersion();
     try {
-      String url = UrlExtractor.extractUrl(args[0]);
-      logger.log(Level.INFO, "{0}{1}", new Object[]{MessageUtil.getMessage("info.url.decoded"),
-        url});
-      if (args[1] != null && !"".equals(args[1].trim())) {
-        logger.log(Level.INFO, "{0} {1}", new Object[]{
-          MessageUtil.getMessage("info.default.path"), UrlExtractor.decodePath(args[1])});
-        MsOfficePathFinder.basePath = UrlExtractor.decodePath(args[1]);
+      ApplicationArguments arguments = ApplicationArguments.extract(args);
+      log("info.url.encoded", arguments.getEncodedUrl());
+      log("info.url.decoded", arguments.getUrl());
+      if (arguments.getBasePath() != null) {
+        log("info.default.path", arguments.getBasePath());
+        MsOfficePathFinder.basePath = arguments.getBasePath();
       }
-      boolean useDeconnectedMode = false;
-      if (args.length >= 3) {
-        useDeconnectedMode = getBooleanValue(args[2]);
-      }
-      AuthenticationInfo authInfo = null;
-      if (args.length >= 5) {
-        authInfo = PasswordManager.extractAuthenticationInfo(args[3], args[4]);
-      } else  if (args.length >= 4 ) {
-        authInfo = PasswordManager.extractAuthenticationInfo(args[3], null);
-      }
-      MsOfficeType contentType = getContentType(UrlExtractor.decodeUrl(args[0]));
-      logger.log(Level.FINE, "{0}{1}", new Object[]{MessageUtil.getMessage("info.document.type"),
-        contentType});
+      log("info.document.type", arguments.getContentType());
       defineLookAndFeel();
-      System.exit(OfficeLauncher.launch(contentType, url, authInfo, useDeconnectedMode));
+      System.exit(OfficeLauncher.launch(arguments));
     } catch (IOException ex) {
-      logger.log(Level.SEVERE, MessageUtil.getMessage("error.message.general"), ex);
+      log("error.message.general", ex);
       MessageDisplayer.displayError(ex);
     } catch (InterruptedException ex) {
-      logger.log(Level.SEVERE, MessageUtil.getMessage("error.message.general"),
-          ex);
+      log("error.message.general", ex);
       MessageDisplayer.displayError(ex);
     } catch (Throwable ex) {
-      logger.log(Level.SEVERE, MessageUtil.getMessage("error.message.general"),
-          ex);
+      log("error.message.general", ex);
       MessageDisplayer.displayError(ex);
     } finally {
       System.exit(0);
     }
-  }
-
-  protected static boolean getBooleanValue(final String expression) {
-    return "true".equalsIgnoreCase(expression) || "yes".equalsIgnoreCase(expression)
-        || "y".equalsIgnoreCase(expression) || "oui".equalsIgnoreCase(expression)
-        || "1".equalsIgnoreCase(expression);
   }
 
   protected static void defineLookAndFeel() {
@@ -121,9 +98,16 @@ public class Launcher {
     }
   }
 
-  protected static MsOfficeType getContentType(String url) throws MalformedURLException {
-    String fileName = new URL(url).getFile();
-    String contentType = mimeTypes.getContentType(fileName.toLowerCase());
-    return MsOfficeType.valueOfMimeType(contentType);
+  private static void log(String key, Object extraInfo) {
+    if (extraInfo instanceof Exception) {
+      logger.log(Level.SEVERE, MessageUtil.getMessage(key), extraInfo);
+    } else {
+      logger.log(Level.INFO, "{0}{1}", new Object[]{MessageUtil.getMessage(key), extraInfo});
+    }
+  }
+
+  private static void logVersion() {
+    logger.log(Level.INFO, "{0} version {1}", new Object[]{MessageUtil.getMessage("app.title"),
+        LAUNCHER_VERSION});
   }
 }

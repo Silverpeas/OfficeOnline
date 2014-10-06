@@ -20,20 +20,6 @@
  */
 package org.silverpeas.openoffice.windows.webdav;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InterruptedIOException;
-import java.net.URLDecoder;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.ProgressMonitor;
-import javax.swing.ProgressMonitorInputStream;
-import javax.swing.UIManager;
-import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpConnectionManager;
@@ -41,8 +27,6 @@ import org.apache.commons.httpclient.HttpVersion;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.URI;
 import org.apache.commons.httpclient.URIException;
-import org.apache.commons.httpclient.UsernamePasswordCredentials;
-import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.ByteArrayRequestEntity;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.HeadMethod;
@@ -56,6 +40,18 @@ import org.apache.jackrabbit.webdav.client.methods.UnLockMethod;
 import org.apache.jackrabbit.webdav.lock.Scope;
 import org.apache.jackrabbit.webdav.lock.Type;
 import org.silverpeas.openoffice.util.MessageUtil;
+
+import javax.swing.*;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InterruptedIOException;
+import java.net.URLDecoder;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static java.net.HttpURLConnection.HTTP_CREATED;
 import static java.net.HttpURLConnection.HTTP_OK;
@@ -74,10 +70,8 @@ public class WebdavManager {
    * Prepare HTTP connections to the WebDav server
    *
    * @param host the webdav server host name.
-   * @param login the login for the user on the webdav server.
-   * @param password the login for the user on the webdav server.
    */
-  public WebdavManager(String host, String login, String password) {
+  public WebdavManager(String host, String login, String authToken) {
     HostConfiguration hostConfig = new HostConfiguration();
     hostConfig.setHost(host);
     HttpConnectionManager connectionManager = new MultiThreadedHttpConnectionManager();
@@ -86,28 +80,25 @@ public class WebdavManager {
     connectionParams.setMaxConnectionsPerHost(hostConfig, maxHostConnections);
     connectionManager.setParams(connectionParams);
     HttpClientParams clientParams = new HttpClientParams();
-    clientParams.setParameter(HttpClientParams.CREDENTIAL_CHARSET, "UTF-8");
     clientParams.setParameter(HttpClientParams.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
     client = new HttpClient(clientParams, connectionManager);
-    Credentials creds = new UsernamePasswordCredentials(login, password);
-    client.getState().setCredentials(AuthScope.ANY, creds);
     client.setHostConfiguration(hostConfig);
   }
 
   /**
    * Lock a ressource on a webdav server.
    *
-   * @param uri the URI to the ressource to be locked.
-   * @param login the user locking the ressource.
+   * @param uri the URI to the resource to be locked.
+   * @param user the identifier of the user locking the resource.
    * @return the lock token.
    * @throws IOException
    */
-  public String lockFile(URI uri, String login) throws IOException {
+  public String lockFile(URI uri, String user) throws IOException {
     String url = decodeURI(uri);
     logger.log(Level.INFO, "{0} {1}", new Object[]{MessageUtil.getMessage("info.webdav.locking"),
       url});
     // Let's lock the file
-    LockMethod lockMethod = new LockMethod(url, Scope.EXCLUSIVE, Type.WRITE, login, 600000l, false);
+    LockMethod lockMethod = new LockMethod(url, Scope.EXCLUSIVE, Type.WRITE, user, 600000l, false);
     client.executeMethod(lockMethod);
     if (lockMethod.succeeded()) {
       return lockMethod.getLockToken();
@@ -121,9 +112,9 @@ public class WebdavManager {
   }
 
   /**
-   * Unlock a ressource on a webdav server.
+   * Unlock a resource on a webdav server.
    *
-   * @param uri the URI to the ressource to be unlocked.
+   * @param uri the URI to the resource to be unlocked.
    * @param lockToken the current lock token.
    * @throws IOException
    */
@@ -150,9 +141,9 @@ public class WebdavManager {
   }
 
   /**
-   * Get the ressource from the webdav server.
+   * Get the resource from the webdav server.
    *
-   * @param uri the uri to the ressource.
+   * @param uri the uri to the resource.
    * @param lockToken the current lock token.
    * @return the path to the saved file on the filesystem.
    * @throws IOException
@@ -194,9 +185,9 @@ public class WebdavManager {
   }
 
   /**
-   * Update a ressource on the webdav file server.
+   * Update a resource on the webdav file server.
    *
-   * @param uri the uri to the ressource.
+   * @param uri the uri to the resource.
    * @param localFilePath the path to the file to be uploaded on the filesystem.
    * @param lockToken the current lock token.
    * @throws IOException

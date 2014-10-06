@@ -38,24 +38,20 @@ import org.silverpeas.openoffice.windows.webdav.WebdavManager;
  */
 public class FileWebDavAccessManager {
 
-  private final String userName;
-  private final char[] password;
+  private final String login;
+  private final String authToken;
   private String lockToken = null;
   static final Logger logger = Logger.getLogger(FileWebDavAccessManager.class.getName());
 
   /**
    * The AccessManager is inited with authentication info to avoid login prompt
    *
-   * @param auth authentication info
+   * @param login the login of the user
+   * @param authToken the authentication token to use with the login.
    */
-  public FileWebDavAccessManager(AuthenticationInfo auth) {
-    if (auth != null) {
-      this.userName = auth.getLogin();
-      this.password = auth.getPassword();
-    } else {
-      this.userName = "";
-      this.password = new char[0];
-    }
+  public FileWebDavAccessManager(String login, String authToken) {
+    this.login = login;
+    this.authToken = authToken;
   }
 
   /**
@@ -68,9 +64,9 @@ public class FileWebDavAccessManager {
    */
   public String retrieveFile(String url) throws HttpException, IOException {
     URI uri = getURI(url);
-    WebdavManager webdav = new WebdavManager(uri.getHost(), userName, new String(password));
+    WebdavManager webdav = new WebdavManager(uri.getHost(), login, authToken);
     // Let's lock the file
-    lockToken = webdav.lockFile(uri, userName);
+    lockToken = webdav.lockFile(uri, login);
     logger.log(Level.INFO, "{0}{1}{2}", new Object[]{MessageUtil.getMessage("info.webdav.locked"),
       ' ', lockToken});
     try {
@@ -94,7 +90,7 @@ public class FileWebDavAccessManager {
    */
   public void pushFile(String tmpFilePath, String url) throws HttpException, IOException {
     URI uri = getURI(url);
-    WebdavManager webdav = new WebdavManager(uri.getHost(), userName, new String(password));
+    WebdavManager webdav = new WebdavManager(uri.getHost(), login, authToken);
     logger.log(Level.INFO, "{0}{1}{2}", new Object[]{MessageUtil.getMessage("info.webdav.put"), ' ',
       tmpFilePath});
     webdav.putFile(uri, tmpFilePath, lockToken);

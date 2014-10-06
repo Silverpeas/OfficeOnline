@@ -30,7 +30,7 @@ import java.util.logging.Logger;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 import org.silverpeas.openoffice.AuthenticationInfo;
-import org.silverpeas.openoffice.Launcher;
+import org.silverpeas.openoffice.OfficeOnline;
 
 /**
  * @author ehugonnet
@@ -55,7 +55,7 @@ public class PasswordManager {
     Cipher cipher = Cipher.getInstance("DES");
     cipher.init(Cipher.DECRYPT_MODE, decryptionKey);
     byte[] bytes = new BigInteger(encodedPassword, 16).toByteArray();
-    Logger.getLogger(Launcher.class.getName()).log(Level.INFO,
+    Logger.getLogger(OfficeOnline.class.getName()).log(Level.INFO,
         "decrypted password byte array length : {0}", bytes.length);
     int nbCaracToRemove = (bytes.length) % 8;
     byte[] result = new byte[bytes.length - nbCaracToRemove];
@@ -106,17 +106,17 @@ public class PasswordManager {
       String decodedLogin = URLDecoder.decode(login, "UTF-8");
       return new AuthenticationInfo(decodedLogin, clearPwd);
     } catch (GeneralSecurityException ex) {
-      Logger.getLogger(Launcher.class.getName()).log(Level.SEVERE, "can't retrieve credentials", ex);
+      Logger.getLogger(OfficeOnline.class.getName()).log(Level.SEVERE, "can't retrieve credentials", ex);
       System.exit(-1);
     } catch (UnsupportedEncodingException ex) {
-      Logger.getLogger(Launcher.class.getName()).log(Level.SEVERE, "can't retrieve credentials", ex);
+      Logger.getLogger(OfficeOnline.class.getName()).log(Level.SEVERE, "can't retrieve credentials", ex);
       System.exit(-1);
     }
     return null;
   }
 
   private static char[] promptForpassword() {
-    Logger.getLogger(Launcher.class.getName()).log(Level.INFO,
+    Logger.getLogger(OfficeOnline.class.getName()).log(Level.INFO,
         "No password provided, need to ask for one");
     return MessageDisplayer.displayPromptPassword();
   }

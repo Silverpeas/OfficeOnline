@@ -20,10 +20,7 @@
  */
 package org.silverpeas.openoffice;
 
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
+import org.silverpeas.openoffice.util.ApplicationArguments;
 import org.silverpeas.openoffice.util.FinderFactory;
 import org.silverpeas.openoffice.util.MessageDisplayer;
 import org.silverpeas.openoffice.util.MessageUtil;
@@ -32,7 +29,9 @@ import org.silverpeas.openoffice.util.OsEnum;
 import org.silverpeas.openoffice.windows.FileWebDavAccessManager;
 import org.silverpeas.openoffice.windows.MsOfficeVersion;
 
-import org.apache.commons.httpclient.HttpException;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author Emmanuel Hugonnet
@@ -42,89 +41,105 @@ public class OfficeLauncher {
   static final Logger logger = Logger.getLogger(OfficeLauncher.class.getName());
 
   /**
-   * Launch the document editor.
+   * Launches the document editor corresponding to the type of the document to open.
    *
-   * @param type type of editor for the document (word editor, presentation editor, etc.)
-   * @param url the url to the document.
-   * @param authInfo authentication parameters
-   * @param useDeconnectedMode : set to true if you want to activate the Disconnected mode : 1)
-   * download file using webdav to local temp directory 2) open it 3) after close, send it back to
-   * silverpeas, still using webdav 4) delete temp file locally
-   * @return the result of the process.
+   * @see org.silverpeas.openoffice.util.ApplicationArguments
+   *
+   * @param arguments the arguments required to launch the document editor.
+   * @return the process execution status.
    * @throws IOException
    * @throws InterruptedException
    * @throws OfficeNotFoundException
    */
-  public static int launch(MsOfficeType type, String url, AuthenticationInfo authInfo,
-      boolean useDeconnectedMode) throws IOException, InterruptedException, OfficeNotFoundException {
-    OfficeFinder finder = FinderFactory.getFinder(type);
+  public static int launch(ApplicationArguments arguments)
+      throws IOException, InterruptedException, OfficeNotFoundException {
+    OfficeFinder finder = FinderFactory.getFinder(arguments.getContentType());
     logger.log(Level.INFO, "We are on {0} OS", OsEnum.getOS());
-    String webdavUrl = url;
-    boolean modeDisconnected = ((OsEnum.isWindows() && useDeconnectedMode) || OsEnum.getOS()
-        == OsEnum.MAC_OSX) && finder.isMicrosoftOffice();
-    if (!modeDisconnected) {
+    String webdavUrl = arguments.getUrl();
+    boolean disconnectedMode = ((OsEnum.isWindows() && arguments.isDisconnectedMode()) ||
+        OsEnum.getOS() == OsEnum.MAC_OSX) && finder.isMicrosoftOffice();
+    if (!disconnectedMode) {
       if (finder.isMicrosoftOffice() && (OsEnum.getOS() == OsEnum.WINDOWS_XP || (OsEnum
-          .isWindows() && MsOfficeVersion.isOldOffice(type)))) {
+          .isWindows() && MsOfficeVersion.isOldOffice(arguments.getContentType())))) {
         webdavUrl = webdavUrl.replace("/repository/", "/repository2000/");
       }
     }
-    switch (type) {
+    switch (arguments.getContentType()) {
       case EXCEL:
-        return launch(type, finder.findSpreadsheet(), webdavUrl, modeDisconnected, authInfo);
+        return launch(arguments.getContentType(), finder.findSpreadsheet(), webdavUrl,
+            disconnectedMode, arguments.getLogin(), arguments.getToken());
       case POWERPOINT:
-        return launch(type, finder.findPresentation(), webdavUrl, modeDisconnected, authInfo);
+        return launch(arguments.getContentType(), finder.findPresentation(), webdavUrl,
+            disconnectedMode, arguments.getLogin(), arguments.getToken());
       case WORD:
-        return launch(type, finder.findWordEditor(), webdavUrl, modeDisconnected, authInfo);
+        return launch(arguments.getContentType(), finder.findWordEditor(), webdavUrl,
+            disconnectedMode, arguments.getLogin(), arguments.getToken());
       case NONE:
       default:
-        return launch(type, finder.findOther(), webdavUrl, modeDisconnected, authInfo);
+        return launch(arguments.getContentType(), finder.findOther(), webdavUrl, disconnectedMode,
+            arguments.getLogin(), arguments.getToken());
     }
   }
 
   /**
    * Launch document edition
    *
-   * @param path path to editor
-   * @param url document url
-   * @param modeDisconnected disconnected mode.
-   * @param auth authentication info
-   * @return status
+   * @param path the path of the editor to launch.
+   * @param url the URL at which the document is located.
+   * @param disconnectedMode is the document should be accessed in disconnected mode.
+   * @param authToken the authentication token required to access the document.
+   * @return status the process execution status.
    * @throws IOException
    * @throws InterruptedException
    */
-  protected static int launch(MsOfficeType type, String path, String url, boolean modeDisconnected,
-      AuthenticationInfo auth) throws IOException, InterruptedException {
+  protected static int launch(MsOfficeType type, String path, String url, boolean disconnectedMode,
+      String login, String authToken) throws IOException, InterruptedException {
     logger.log(Level.INFO, "The path: {0}", path);
     logger.log(Level.INFO, "The url: {0}", url);
-    if (modeDisconnected) {
+    logger.log(Level.INFO, "The token: {0}", authToken);
+    String authenticatedUrl = getAuthenticatedUrl(url, authToken);
+    if (disconnectedMode) {
       try {
-        String webdavUrl = url;
-        final FileWebDavAccessManager webdavAccessManager = new FileWebDavAccessManager(auth);
-        if ('"' == url.charAt(0)) {
-          webdavUrl = url.substring(1, url.length() - 1);
-        }
-        String tmpFilePath = webdavAccessManager.retrieveFile(webdavUrl);
+        String webDavUrl = getAuthenticatedUrl(unquoteUrl(url), authToken);
+        final FileWebDavAccessManager webdavAccessManager =
+            new FileWebDavAccessManager(login, authToken);
+        String tmpFilePath = webdavAccessManager.retrieveFile(webDavUrl);
         logger.log(Level.INFO, "The exact exec line: {0} {1}", new Object[]{path, tmpFilePath});
         Process process = Runtime.getRuntime().exec(path + ' ' + tmpFilePath);
         process.waitFor();
-        webdavAccessManager.pushFile(tmpFilePath, url);
+        webdavAccessManager.pushFile(tmpFilePath, authenticatedUrl);
         MessageDisplayer.displayMessage(MessageUtil.getMessage("info.ok"));
         return 0;
-      } catch (HttpException ex) {
-        logger.log(Level.SEVERE, null, ex);
-        throw new IOException(ex);
       } catch (IOException ex) {
         logger.log(Level.SEVERE, null, ex);
         throw ex;
       }
     } else {
-      // Standard mode : just open it
+      // Standard mode: just open it
       logger.log(Level.INFO, "The exact exec line: {0} {1}", new Object[]{path, url});
-      Process process = Runtime.getRuntime().exec(path + ' ' + url);
+      Process process = Runtime.getRuntime().exec(path + ' ' + authenticatedUrl);
       return process.waitFor();
     }
   }
 
   private OfficeLauncher() {
+  }
+
+  private static String unquoteUrl(String url) {
+    String unquotedUrl = url;
+    if ('"' == url.charAt(0)) {
+      unquotedUrl = url.substring(1, url.length() - 1);
+    }
+    return unquotedUrl;
+  }
+
+  private static String getAuthenticatedUrl(String url, String authToken) {
+    String authUrl;
+    if ('"' == url.charAt(0)) {
+      authUrl = "\"" + unquoteUrl(url) + "?_=" + authToken + "\"";
+    } else {
+      authUrl = url + "?_=" + authToken;
+    }
+    return authUrl;
   }
 }
