@@ -67,17 +67,17 @@ public class OfficeLauncher {
     switch (arguments.getContentType()) {
       case EXCEL:
         return launch(arguments.getContentType(), finder.findSpreadsheet(), webdavUrl,
-            disconnectedMode, arguments.getLogin(), arguments.getToken());
+            disconnectedMode, arguments.getLogin());
       case POWERPOINT:
         return launch(arguments.getContentType(), finder.findPresentation(), webdavUrl,
-            disconnectedMode, arguments.getLogin(), arguments.getToken());
+            disconnectedMode, arguments.getLogin());
       case WORD:
         return launch(arguments.getContentType(), finder.findWordEditor(), webdavUrl,
-            disconnectedMode, arguments.getLogin(), arguments.getToken());
+            disconnectedMode, arguments.getLogin());
       case NONE:
       default:
         return launch(arguments.getContentType(), finder.findOther(), webdavUrl, disconnectedMode,
-            arguments.getLogin(), arguments.getToken());
+            arguments.getLogin());
     }
   }
 
@@ -87,27 +87,23 @@ public class OfficeLauncher {
    * @param path the path of the editor to launch.
    * @param url the URL at which the document is located.
    * @param disconnectedMode is the document should be accessed in disconnected mode.
-   * @param authToken the authentication token required to access the document.
    * @return status the process execution status.
    * @throws IOException
    * @throws InterruptedException
    */
   protected static int launch(MsOfficeType type, String path, String url, boolean disconnectedMode,
-      String login, String authToken) throws IOException, InterruptedException {
+      String login) throws IOException, InterruptedException {
     logger.log(Level.INFO, "The path: {0}", path);
     logger.log(Level.INFO, "The url: {0}", url);
-    logger.log(Level.INFO, "The token: {0}", authToken);
-    String authenticatedUrl = getAuthenticatedUrl(url, authToken);
     if (disconnectedMode) {
       try {
-        String webDavUrl = getAuthenticatedUrl(unquoteUrl(url), authToken);
-        final FileWebDavAccessManager webdavAccessManager =
-            new FileWebDavAccessManager(login, authToken);
+        String webDavUrl = unquoteUrl(url);
+        final FileWebDavAccessManager webdavAccessManager = new FileWebDavAccessManager(login);
         String tmpFilePath = webdavAccessManager.retrieveFile(webDavUrl);
         logger.log(Level.INFO, "The exact exec line: {0} {1}", new Object[]{path, tmpFilePath});
         Process process = Runtime.getRuntime().exec(path + ' ' + tmpFilePath);
         process.waitFor();
-        webdavAccessManager.pushFile(tmpFilePath, authenticatedUrl);
+        webdavAccessManager.pushFile(tmpFilePath, url);
         MessageDisplayer.displayMessage(MessageUtil.getMessage("info.ok"));
         return 0;
       } catch (IOException ex) {
@@ -117,7 +113,7 @@ public class OfficeLauncher {
     } else {
       // Standard mode: just open it
       logger.log(Level.INFO, "The exact exec line: {0} {1}", new Object[]{path, url});
-      Process process = Runtime.getRuntime().exec(path + ' ' + authenticatedUrl);
+      Process process = Runtime.getRuntime().exec(path + ' ' + url);
       return process.waitFor();
     }
   }
@@ -133,13 +129,4 @@ public class OfficeLauncher {
     return unquotedUrl;
   }
 
-  private static String getAuthenticatedUrl(String url, String authToken) {
-    String authUrl;
-    if ('"' == url.charAt(0)) {
-      authUrl = "\"" + unquoteUrl(url) + "?_=" + authToken + "\"";
-    } else {
-      authUrl = url + "?_=" + authToken;
-    }
-    return authUrl;
-  }
 }

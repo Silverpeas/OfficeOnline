@@ -39,7 +39,6 @@ import org.silverpeas.openoffice.windows.webdav.WebdavManager;
 public class FileWebDavAccessManager {
 
   private final String login;
-  private final String authToken;
   private String lockToken = null;
   static final Logger logger = Logger.getLogger(FileWebDavAccessManager.class.getName());
 
@@ -47,11 +46,9 @@ public class FileWebDavAccessManager {
    * The AccessManager is inited with authentication info to avoid login prompt
    *
    * @param login the login of the user
-   * @param authToken the authentication token to use with the login.
    */
-  public FileWebDavAccessManager(String login, String authToken) {
+  public FileWebDavAccessManager(String login) {
     this.login = login;
-    this.authToken = authToken;
   }
 
   /**
@@ -64,7 +61,7 @@ public class FileWebDavAccessManager {
    */
   public String retrieveFile(String url) throws HttpException, IOException {
     URI uri = getURI(url);
-    WebdavManager webdav = new WebdavManager(uri.getHost(), login, authToken);
+    WebdavManager webdav = new WebdavManager(uri.getHost());
     // Let's lock the file
     lockToken = webdav.lockFile(uri, login);
     logger.log(Level.INFO, "{0}{1}{2}", new Object[]{MessageUtil.getMessage("info.webdav.locked"),
@@ -90,7 +87,7 @@ public class FileWebDavAccessManager {
    */
   public void pushFile(String tmpFilePath, String url) throws HttpException, IOException {
     URI uri = getURI(url);
-    WebdavManager webdav = new WebdavManager(uri.getHost(), login, authToken);
+    WebdavManager webdav = new WebdavManager(uri.getHost());
     logger.log(Level.INFO, "{0}{1}{2}", new Object[]{MessageUtil.getMessage("info.webdav.put"), ' ',
       tmpFilePath});
     webdav.putFile(uri, tmpFilePath, lockToken);

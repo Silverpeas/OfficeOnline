@@ -13,7 +13,6 @@ public class ApplicationArguments {
   private String basePath;
   private boolean disconnectedMode;
   private MsOfficeType contentType;
-  private String token;
   private String login;
 
   protected ApplicationArguments() {
@@ -31,10 +30,8 @@ public class ApplicationArguments {
     }
     // the user login
     arguments.login = args[2];
-    // the authentication token
-    arguments.token = args[3];
     // is the file has to be opened in the disconnected mode?
-    arguments.disconnectedMode = getBooleanValue(args[4]);
+    arguments.disconnectedMode = getBooleanValue(args[3]);
     // the content type of the document
     arguments.contentType =
         ContentTypeUtil.getContentType(UrlExtractor.decodeUrl(arguments.encodedUrl));
@@ -85,15 +82,6 @@ public class ApplicationArguments {
    */
   public MsOfficeType getContentType() {
     return contentType;
-  }
-
-  /**
-   * Gets the authentication token to use to access the document by webDAV. Without this token or
-   * with an invalid token, the access will be forbidden by Silverpeas.
-   * @return an authentication token.
-   */
-  public String getToken() {
-    return token;
   }
 
   /**

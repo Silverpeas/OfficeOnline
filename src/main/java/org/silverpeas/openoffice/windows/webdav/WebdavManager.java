@@ -71,7 +71,7 @@ public class WebdavManager {
    *
    * @param host the webdav server host name.
    */
-  public WebdavManager(String host, String login, String authToken) {
+  public WebdavManager(String host) {
     HostConfiguration hostConfig = new HostConfiguration();
     hostConfig.setHost(host);
     HttpConnectionManager connectionManager = new MultiThreadedHttpConnectionManager();

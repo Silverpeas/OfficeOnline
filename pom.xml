@@ -127,6 +127,7 @@
               <storepass>${silverpeas.storepass}</storepass>
               <verbose>true</verbose>
               <keypass>${silverpeas.storepass}</keypass>
+              <tsa>http://tsa.starfieldtech.com/</tsa>
               <removeExistingSignatures>true</removeExistingSignatures>
             </configuration>
           </plugin>
