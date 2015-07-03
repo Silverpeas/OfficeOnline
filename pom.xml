@@ -16,7 +16,7 @@
   <groupId>com.silverpeas.services</groupId>
   <artifactId>office-online</artifactId>
   <packaging>jar</packaging>
-  <version>5.14</version>
+  <version>5.15-SNAPSHOT</version>
   <name>Online Office Editor - ${project.version}</name>
   <build>
     <finalName>OpenOfficeLauncher</finalName>
