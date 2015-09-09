@@ -62,12 +62,6 @@ public class OfficeLauncher {
     String webdavUrl = url;
     boolean modeDisconnected = ((OsEnum.isWindows() && useDeconnectedMode) || OsEnum.getOS()
         == OsEnum.MAC_OSX) && finder.isMicrosoftOffice();
-    if (!modeDisconnected) {
-      if (finder.isMicrosoftOffice() && (OsEnum.getOS() == OsEnum.WINDOWS_XP || (OsEnum
-          .isWindows() && MsOfficeVersion.isOldOffice(type)))) {
-        webdavUrl = webdavUrl.replace("/repository/", "/repository2000/");
-      }
-    }
     switch (type) {
       case EXCEL:
         return launch(type, finder.findSpreadsheet(), webdavUrl, modeDisconnected, authInfo);
@@ -90,6 +84,7 @@ public class OfficeLauncher {
    * @param auth authentication info
    * @return status
    * @throws IOException
+   *
    * @throws InterruptedException
    */
   protected static int launch(MsOfficeType type, String path, String url, boolean modeDisconnected,
