@@ -3,8 +3,8 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.silverpeas</groupId>
-    <artifactId>parent</artifactId>
-    <version>28-SNAPSHOT</version>
+    <artifactId>silverpeas-project</artifactId>
+    <version>1-SNAPSHOT</version>
   </parent>
   <scm>
     <connection>scm:git:git@github.com:Silverpeas/OfficeOnline.git</connection>
